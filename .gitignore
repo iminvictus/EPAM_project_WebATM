@@ -7,7 +7,7 @@
 /generated/
 /data/
 node_modules/
-*.iml
+/target/
 
 # Eclipse IDE files
 .classpath
