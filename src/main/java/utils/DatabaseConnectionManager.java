@@ -1,5 +1,7 @@
 package utils;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,6 +10,8 @@ import java.sql.SQLException;
  * @author Evgeny Smerdov
  */
 public class DatabaseConnectionManager {
+    private static final Logger logger = Logger.getLogger(DatabaseConnectionManager.class);
+
     private final String host;
     private final String username;
     private final String password;
@@ -36,7 +40,7 @@ public class DatabaseConnectionManager {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
+            logger.error("postgresql driver was not connected", ex);
             throw new RuntimeException(ex);
         }
         return DriverManager.getConnection("jdbc:postgresql://" + host + "/" + databaseName, username, password);

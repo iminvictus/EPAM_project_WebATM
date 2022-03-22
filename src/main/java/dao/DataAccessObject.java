@@ -1,5 +1,7 @@
 package dao;
 
+import org.apache.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.List;
  * @param <T> any entity class of database that inherits DataTransferObject
  */
 public abstract class DataAccessObject <T extends DataTransferObject> {
+    private static final Logger logger = Logger.getLogger(DataAccessObject.class);
     protected final Connection connection;
 
 
@@ -28,7 +31,7 @@ public abstract class DataAccessObject <T extends DataTransferObject> {
         try {
             this.connection.close();
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            logger.error("connection was not closed", ex);
             throw new RuntimeException(ex);
         }
     }

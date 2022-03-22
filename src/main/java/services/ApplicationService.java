@@ -2,13 +2,14 @@ package services;
 
 import dao.users.UserDAO;
 import models.User;
+import org.apache.log4j.Logger;
 import utils.DatabaseConnectionManager;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class ApplicationService {
-
+    private static final Logger logger = Logger.getLogger(ApplicationService.class);
     private final static IllegalArgumentException ZERO_OR_NEGATIVE = new IllegalArgumentException("value is zero or negative");
 
     private final UserDAO userDAO;
@@ -18,7 +19,7 @@ public class ApplicationService {
         try {
             userDAO = new UserDAO(databaseConnectionManager.getConnection());
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            logger.error("userDAO was not connected to the database", ex);
             throw new RuntimeException(ex);
         }
     }
