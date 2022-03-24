@@ -3,6 +3,7 @@ package services;
 import dao.users.UserDAO;
 import models.User;
 import org.apache.log4j.Logger;
+import utils.BdCredentials;
 import utils.DatabaseConnectionManager;
 
 import java.sql.SQLException;
@@ -15,7 +16,8 @@ public class ApplicationService {
     private final UserDAO userDAO;
 
     public ApplicationService() {
-        DatabaseConnectionManager databaseConnectionManager = new DatabaseConnectionManager("localhost", "postgres", "admin", "atm_service");
+        DatabaseConnectionManager databaseConnectionManager =
+                new DatabaseConnectionManager(BdCredentials.getBdHost(), BdCredentials.getBdLogin(), BdCredentials.getBdPassword(), BdCredentials.getBdName());
         try {
             userDAO = new UserDAO(databaseConnectionManager.getConnection());
         } catch (SQLException ex) {
