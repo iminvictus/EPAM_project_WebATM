@@ -25,17 +25,17 @@
 
     </form>
 
-    <h1>Input deposit amount</h1>
+    <h1>Input your ID to deposit money</h1>
 
-    <form name="depositForm" action="${pageContext.request.contextPath}/status" method="get">
+    <form name="depositForm" action="${pageContext.request.contextPath}/deposit" method="get">
 
         <table>
 
             <tbody>
 
             <tr>
-                <td>Deposit amount:</td>
-                <td><input type="text" name="depositAmount" value="" size="20"></td>
+                <td>ID:</td>
+                <td><input type="text" name="id" value="" size="20"></td>
             </tr>
 
             </tbody>
