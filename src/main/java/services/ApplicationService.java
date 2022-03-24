@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import utils.BdCredentials;
 import utils.DatabaseConnectionManager;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -17,7 +18,8 @@ public class ApplicationService {
 
     public ApplicationService() {
         DatabaseConnectionManager databaseConnectionManager =
-                new DatabaseConnectionManager(BdCredentials.getBdHost(), BdCredentials.getBdLogin(), BdCredentials.getBdPassword(), BdCredentials.getBdName());
+                new DatabaseConnectionManager(BdCredentials.getBdHost(), BdCredentials.getBdLogin(),
+                        BdCredentials.getBdPassword(), BdCredentials.getBdName());
         try {
             userDAO = new UserDAO(databaseConnectionManager.getConnection());
         } catch (SQLException ex) {
@@ -36,6 +38,10 @@ public class ApplicationService {
             throw ZERO_OR_NEGATIVE;
         }
         return userDAO.findById(id);
+    }
+
+    public void depositMoney(long id, BigDecimal amount) {
+        userDAO.depositMoney(id, amount);
     }
 
     public void destroy() {

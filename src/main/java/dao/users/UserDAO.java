@@ -4,6 +4,7 @@ import dao.DataAccessObject;
 import models.User;
 import org.apache.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ public class UserDAO extends DataAccessObject<User> {
 
     private static final String FIND_BY_ID = "SELECT id, name, surname, balance FROM users WHERE id = ?";
     private static final String FIND_ALL = "SELECT id, name, surname, balance FROM users";
+    private static final String UPDATE_BALANCE = "UPDATE users SET balance = ? WHERE id = ?";
 
     public UserDAO(Connection connection) {
         super(connection);
@@ -54,6 +56,22 @@ public class UserDAO extends DataAccessObject<User> {
             }
             logger.info("findAll method was invoked in UserDAO");
             return userList.size() != 0 ? userList : null;
+        } catch (SQLException ex) {
+            logger.error("sql exception", ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public void depositMoney(long id, BigDecimal amount) {
+        try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_BALANCE)) {
+            User user = findById(id);
+            BigDecimal newBalance = user.getBalance().add(amount);
+
+            statement.setBigDecimal(1, newBalance);
+            statement.setLong(2, id);
+
+            logger.info("depositMoney method was invoked in UserDAO");
+            statement.execute();
         } catch (SQLException ex) {
             logger.error("sql exception", ex);
             throw new RuntimeException(ex);
