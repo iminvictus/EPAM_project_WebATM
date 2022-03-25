@@ -77,4 +77,19 @@ public class UserDAO extends DataAccessObject<User> {
             throw new RuntimeException(ex);
         }
     }
+
+    public int withdrawMoney(long id, BigDecimal amount) {
+        try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_BALANCE)) {
+            User user = findById(id);
+            BigDecimal newBalance = user.getBalance().subtract(amount);
+            statement.setBigDecimal(1, newBalance);
+            statement.setLong(2, id);
+            logger.info("withDrawMoney method was invoked in UserDAO");
+            return statement.executeUpdate();
+        } catch (SQLException ex) {
+            logger.error("sql exception", ex);
+            throw new RuntimeException(ex);
+        }
+
+    }
 }

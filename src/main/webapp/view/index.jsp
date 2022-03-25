@@ -47,17 +47,17 @@
 
     </form>
 
-    <h1>Input withdraw amount</h1>
+    <h1>Input your ID to withdraw money</h1>
 
-    <form name="withdrawForm" action="${pageContext.request.contextPath}/status" method="get">
+    <form name="withdrawForm" action="${pageContext.request.contextPath}/withdraw" method="get">
 
         <table>
 
             <tbody>
 
             <tr>
-                <td>Withdraw amount:</td>
-                <td><input type="text" name="withdrawAmount" value="" size="20"></td>
+                <td>ID:</td>
+                <td><input type="text" name="id_withdrawAmount" value="" size="20"></td>
             </tr>
 
             </tbody>
