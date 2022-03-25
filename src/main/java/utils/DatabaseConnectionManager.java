@@ -34,7 +34,7 @@ public class DatabaseConnectionManager {
     /**
      * This method provides connection to the database
      * @return connection to the database
-     * @throws SQLException if the connection is not provgided.
+     * @throws SQLException if the connection is not provided.
      */
     public Connection getConnection() throws SQLException {
         try {

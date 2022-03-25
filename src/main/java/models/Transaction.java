@@ -1,9 +1,8 @@
 package models;
 
 import dao.DataTransferObject;
-
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 public class Transaction implements DataTransferObject {
@@ -11,18 +10,18 @@ public class Transaction implements DataTransferObject {
     private long userid;
     private String type;
     private BigDecimal amount;
-    private Timestamp time;
+    private ZonedDateTime time;
 
     public Transaction() {}
 
-    public Transaction(long userid, String type, BigDecimal amount, Timestamp time) {
+    public Transaction(long userid, String type, BigDecimal amount, ZonedDateTime time) {
         this.userid = userid;
         this.type = type;
         this.amount = amount;
         this.time = time;
     }
 
-    public Transaction(long id, long userid, String type, BigDecimal amount, Timestamp time) {
+    public Transaction(long id, long userid, String type, BigDecimal amount, ZonedDateTime time) {
         this.id = id;
         this.userid = userid;
         this.type = type;
@@ -85,7 +84,8 @@ public class Transaction implements DataTransferObject {
         this.amount = amount;
     }
 
-    public Timestamp getTime() { return time; }
+    public ZonedDateTime getTime() { return time; }
 
-    public void setTime(Timestamp time) { this.time = time; }
+    public void setTime(ZonedDateTime time) { this.time = time; }
 }
+
