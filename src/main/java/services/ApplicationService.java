@@ -1,6 +1,8 @@
 package services;
 
+import dao.transactions.TransactionDAO;
 import dao.users.UserDAO;
+import models.Transaction;
 import models.User;
 import org.apache.log4j.Logger;
 import utils.BdCredentials;
@@ -8,6 +10,7 @@ import utils.DatabaseConnectionManager;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class ApplicationService {
@@ -15,6 +18,7 @@ public class ApplicationService {
     private final static IllegalArgumentException ZERO_OR_NEGATIVE = new IllegalArgumentException("value is zero or negative");
 
     private final UserDAO userDAO;
+    private final TransactionDAO transactionDAO;
 
     public ApplicationService() {
         DatabaseConnectionManager databaseConnectionManager =
@@ -24,6 +28,12 @@ public class ApplicationService {
             userDAO = new UserDAO(databaseConnectionManager.getConnection());
         } catch (SQLException ex) {
             logger.error("userDAO was not connected to the database", ex);
+            throw new RuntimeException(ex);
+        }
+        try {
+            transactionDAO = new TransactionDAO(databaseConnectionManager.getConnection());
+        } catch (SQLException ex) {
+            logger.error("transactionDAO was not connected to the database", ex);
             throw new RuntimeException(ex);
         }
     }
@@ -42,6 +52,9 @@ public class ApplicationService {
 
     public void depositMoney(long id, BigDecimal amount) {
         userDAO.depositMoney(id, amount);
+        Transaction transaction = new Transaction(id, "Deposit",
+                amount, new Timestamp(System.currentTimeMillis()));
+        transactionDAO.save(transaction);
     }
 
     public void destroy() {
