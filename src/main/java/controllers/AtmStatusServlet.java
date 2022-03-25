@@ -8,15 +8,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
-
-import dao.users.UserDAO;
 import models.User;
 import services.ApplicationService;
-import utils.BdCredentials;
-import utils.DatabaseConnectionManager;
 
 @WebServlet(value = "/status")
 public class AtmStatusServlet extends HttpServlet {

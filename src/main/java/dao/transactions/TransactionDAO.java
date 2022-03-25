@@ -1,18 +1,29 @@
 package dao.transactions;
 
 import dao.DataAccessObject;
+import dao.users.UserDAO;
 import models.Transaction;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TransactionDAO extends DataAccessObject<Transaction> {
 
-    private static Logger logger = Logger.getLogger(TransactionDAO.class);
-    private static final String INSERT = "INSERT INTO transactions (type, amount, time, userid) VALUES (?, ?, ?, ?)";
+    private final static Logger logger = Logger.getLogger(UserDAO.class);
+
+    private static final String FIND_BY_ID = "SELECT id, userid, type, amount, time FROM transactions WHERE id = ?";
+    private static final String FIND_BY_USER_ID = "SELECT id, userid, type, amount, time FROM transactions WHERE userid = ?";
+    private static final String FIND_ALL = "SELECT id, userid, type, amount, time FROM transactions";
+    private static final String INSERT = "INSERT INTO transactions (userid, type, amount, time) VALUES (?, ?, ?, ?)";
 
     /**
      * Establish connection to the DataAccessObject
@@ -25,20 +36,76 @@ public class TransactionDAO extends DataAccessObject<Transaction> {
 
     @Override
     public Transaction findById(long id) {
-        return null;
+        try (PreparedStatement statement = this.connection.prepareStatement(FIND_BY_ID)) {
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            Transaction transaction = new Transaction();
+            while(resultSet.next()) {
+                transaction.setId(resultSet.getLong("id"));
+                transaction.setUserid(resultSet.getLong("userid"));
+                transaction.setType(resultSet.getString("type"));
+                transaction.setAmount(resultSet.getBigDecimal("amount"));
+                transaction.setTime(ZonedDateTime.of(resultSet.getTimestamp("time").toLocalDateTime(), ZoneId.systemDefault()));
+            }
+            logger.info("findById method was invoked in TransactionDAO");
+            return transaction.getId() != 0 ? transaction : null;
+        } catch (SQLException ex) {
+            logger.error("sql exception", ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public List<Transaction> findByUserId(long id) {
+        try (PreparedStatement statement = this.connection.prepareStatement(FIND_BY_USER_ID)) {
+            statement.setLong(1, id);
+            ResultSet resultSet = statement.executeQuery();
+            List<Transaction> transactionsList = new ArrayList<>();
+            while(resultSet.next()) {
+                Transaction transaction = new Transaction();
+                transaction.setId(resultSet.getLong("id"));
+                transaction.setUserid(resultSet.getLong("userid"));
+                transaction.setType(resultSet.getString("type"));
+                transaction.setAmount(resultSet.getBigDecimal("amount"));
+                transaction.setTime(ZonedDateTime.of(resultSet.getTimestamp("time").toLocalDateTime(), ZoneId.systemDefault()));
+                if (transaction.getUserid() == id)
+                    transactionsList.add(transaction);
+            }
+            logger.info("findByUserId method was invoked in TransactionDAO");
+            return transactionsList.size() != 0 ? transactionsList : null;
+        } catch (SQLException ex) {
+            logger.error("sql exception", ex);
+            throw new RuntimeException(ex);
+        }
     }
 
     @Override
     public List<Transaction> findAll() {
-        return null;
+        try(Statement statement = this.connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(FIND_ALL);
+            List<Transaction> transactionsList = new ArrayList<>();
+            while (resultSet.next()) {
+                Transaction transaction = new Transaction();
+                transaction.setId(resultSet.getLong("id"));
+                transaction.setUserid(resultSet.getLong("userid"));
+                transaction.setType(resultSet.getString("type"));
+                transaction.setAmount(resultSet.getBigDecimal("amount"));
+                transaction.setTime(ZonedDateTime.of(resultSet.getTimestamp("time").toLocalDateTime(), ZoneId.systemDefault()));
+                transactionsList.add(transaction);
+            }
+            logger.info("findAll method was invoked in TransactionDAO");
+            return transactionsList.size() != 0 ? transactionsList : null;
+        } catch (SQLException ex) {
+            logger.error("sql exception", ex);
+            throw new RuntimeException(ex);
+        }
     }
 
     public void save(Transaction transaction) {
         try (PreparedStatement statement = this.connection.prepareStatement(INSERT)) {
-            statement.setString(1, transaction.getType());
-            statement.setBigDecimal(2, transaction.getAmount());
-            statement.setTimestamp(3, transaction.getTime());
-            statement.setLong(4, transaction.getUserid());
+            statement.setLong(1, transaction.getUserid());
+            statement.setString(2, transaction.getType());
+            statement.setBigDecimal(3, transaction.getAmount());
+            statement.setTimestamp(4, Timestamp.valueOf(transaction.getTime().toLocalDateTime()));
             statement.execute();
             logger.info("save method was invoked in TransactionDAO");
         } catch (SQLException ex) {

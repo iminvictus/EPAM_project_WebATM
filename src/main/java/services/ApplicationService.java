@@ -10,7 +10,7 @@ import utils.DatabaseConnectionManager;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class ApplicationService {
@@ -50,10 +50,29 @@ public class ApplicationService {
         return userDAO.findById(id);
     }
 
+    public List<Transaction> getAllTransactions() {
+        List<Transaction> transList = transactionDAO.findAll();
+        return transList != null ? transList : List.of();
+    }
+
+    public List <Transaction> getTransactionsByUserId (long id) {
+        if (id <= 0) {
+            throw ZERO_OR_NEGATIVE;
+        }
+        return transactionDAO.findByUserId(id);
+    }
+
+    public Transaction getTransactionById(long id) {
+        if (id <= 0) {
+            throw ZERO_OR_NEGATIVE;
+        }
+        return transactionDAO.findById(id);
+    }
+
     public void depositMoney(long id, BigDecimal amount) {
         userDAO.depositMoney(id, amount);
         Transaction transaction = new Transaction(id, "Deposit",
-                amount, new Timestamp(System.currentTimeMillis()));
+                amount, ZonedDateTime.now());
         transactionDAO.save(transaction);
     }
 
@@ -66,5 +85,6 @@ public class ApplicationService {
 
     public void destroy() {
         userDAO.closeConnection();
+        transactionDAO.closeConnection();
     }
 }
