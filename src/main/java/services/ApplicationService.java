@@ -2,18 +2,17 @@ package services;
 
 import dao.transactions.TransactionDAO;
 import dao.users.UserDAO;
+import lombok.extern.log4j.Log4j;
 import models.Transaction;
 import models.User;
-import org.apache.log4j.Logger;
 import utils.DatabaseConnectionManager;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+@Log4j
 public class ApplicationService {
-    private static final Logger logger = Logger.getLogger(ApplicationService.class);
     private final static IllegalArgumentException ZERO_OR_NEGATIVE = new IllegalArgumentException("value is zero or negative");
 
     private final UserDAO userDAO;

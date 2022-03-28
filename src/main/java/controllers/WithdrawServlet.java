@@ -5,21 +5,20 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.log4j.Log4j;
 import models.User;
-import org.apache.log4j.Logger;
+
 import services.ApplicationService;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-
+@Log4j
 @WebServlet("/withdraw")
 public class WithdrawServlet extends HttpServlet {
-
-    private static final Logger logger = Logger.getLogger(WithdrawServlet.class);
     private ApplicationService applicationService;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         applicationService = new ApplicationService();
     }
 
@@ -44,11 +43,8 @@ public class WithdrawServlet extends HttpServlet {
             BigDecimal amountToWithdraw = BigDecimal.valueOf(Float.parseFloat(request.getParameter("amount")));
 
             applicationService.withdrawMoney(id, amountToWithdraw);
-
             response.sendRedirect(request.getContextPath() + "/service");
-
         } catch (IOException ex) {
-
             logger.error("IOException", ex);
             throw new RuntimeException(ex);
         }
