@@ -25,7 +25,6 @@ public class AtmStatusServlet extends HttpServlet {
         ServletContext servletContext = getServletContext();
         RequestDispatcher dispatcher = servletContext.getRequestDispatcher("/view/AtmService.jsp");
         dispatcher.forward(request, response);
-
     }
 
     @Override

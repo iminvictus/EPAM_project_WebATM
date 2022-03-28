@@ -1,9 +1,8 @@
 package dao.transactions;
 
 import dao.DataAccessObject;
-import dao.users.UserDAO;
+import lombok.extern.log4j.Log4j;
 import models.Transaction;
-import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,10 +15,8 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Log4j
 public class TransactionDAO extends DataAccessObject<Transaction> {
-
-    private final static Logger logger = Logger.getLogger(UserDAO.class);
-
     private static final String FIND_BY_ID = "SELECT id, userid, type, amount, time FROM transactions WHERE id = ?";
     private static final String FIND_BY_USER_ID = "SELECT id, userid, type, amount, time FROM transactions WHERE userid = ?";
     private static final String FIND_ALL = "SELECT id, userid, type, amount, time FROM transactions";

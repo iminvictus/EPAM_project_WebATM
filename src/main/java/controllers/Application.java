@@ -1,5 +1,6 @@
 package controllers;
 
+import lombok.extern.log4j.Log4j;
 import models.User;
 import org.apache.log4j.Logger;
 import services.ApplicationService;
@@ -12,13 +13,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+@Log4j
 @WebServlet("/service")
 public class Application extends HttpServlet {
-  private static final Logger logger = Logger.getLogger(Application.class);
   private ApplicationService applicationService;
 
   @Override
-  public void init() throws ServletException {
+  public void init() {
     applicationService = new ApplicationService();
   }
 

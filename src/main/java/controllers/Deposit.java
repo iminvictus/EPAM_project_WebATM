@@ -1,7 +1,7 @@
 package controllers;
 
+import lombok.extern.log4j.Log4j;
 import models.User;
-import org.apache.log4j.Logger;
 import services.ApplicationService;
 
 import jakarta.servlet.ServletException;
@@ -12,9 +12,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+@Log4j
 @WebServlet("/deposit")
 public class Deposit extends HttpServlet {
-    private static final Logger logger = Logger.getLogger(Application.class);
     private ApplicationService applicationService;
 
     @Override

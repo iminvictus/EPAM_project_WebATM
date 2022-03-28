@@ -1,6 +1,6 @@
 package dao;
 
-import org.apache.log4j.Logger;
+import lombok.extern.log4j.Log4j;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,10 +10,9 @@ import java.util.List;
  * @author Evgeny Smerdov
  * @param <T> any entity class of database that inherits DataTransferObject
  */
+@Log4j
 public abstract class DataAccessObject <T extends DataTransferObject> {
-    private static final Logger logger = Logger.getLogger(DataAccessObject.class);
     protected final Connection connection;
-
 
     /**
      * Establish connection to the DataAccessObject

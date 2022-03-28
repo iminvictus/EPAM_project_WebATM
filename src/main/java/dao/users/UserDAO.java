@@ -1,8 +1,8 @@
 package dao.users;
 
 import dao.DataAccessObject;
+import lombok.extern.log4j.Log4j;
 import models.User;
-import org.apache.log4j.Logger;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -13,10 +13,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Log4j
 public class UserDAO extends DataAccessObject<User> {
-
-    private final static Logger logger = Logger.getLogger(UserDAO.class);
-
     private static final String FIND_BY_ID = "SELECT id, name, surname, balance FROM users WHERE id = ?";
     private static final String FIND_ALL = "SELECT id, name, surname, balance FROM users";
     private static final String UPDATE_BALANCE = "UPDATE users SET balance = ? WHERE id = ?";
@@ -70,10 +68,8 @@ public class UserDAO extends DataAccessObject<User> {
         try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_BALANCE)) {
             User user = findById(id);
             BigDecimal newBalance = user.getBalance().add(amount);
-
             statement.setBigDecimal(1, newBalance);
             statement.setLong(2, id);
-
             logger.info("depositMoney method was invoked in UserDAO");
             statement.execute();
         } catch (SQLException ex) {
@@ -94,6 +90,5 @@ public class UserDAO extends DataAccessObject<User> {
             logger.error("sql exception", ex);
             throw new RuntimeException(ex);
         }
-
     }
 }

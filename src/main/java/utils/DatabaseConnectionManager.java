@@ -1,6 +1,6 @@
 package utils;
 
-import org.apache.log4j.Logger;
+import lombok.extern.log4j.Log4j;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -11,8 +11,8 @@ import java.util.ResourceBundle;
 /**
  * @author Evgeny Smerdov
  */
+@Log4j
 public class DatabaseConnectionManager {
-    private static final Logger logger = Logger.getLogger(DatabaseConnectionManager.class);
     private static Connection connection;
     private static String host;
     private static String databaseName;

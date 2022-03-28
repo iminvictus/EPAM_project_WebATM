@@ -1,7 +1,7 @@
 package controllers;
 
+import lombok.extern.log4j.Log4j;
 import models.Transaction;
-import org.apache.log4j.Logger;
 import services.ApplicationService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,13 +11,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+@Log4j
 @WebServlet("/history")
 public class HistoryServlet extends HttpServlet {
-    private static final Logger logger = Logger.getLogger(HistoryServlet.class);
     private ApplicationService histService;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         histService = new ApplicationService();
     }
 
