@@ -69,7 +69,7 @@ public class ApplicationService {
     public void withdrawMoney(long id, BigDecimal amount){
         userDAO.withdrawMoney(id, amount);
         Transaction transaction = new Transaction(id, "Withdraw",
-                amount, new Timestamp(System.currentTimeMillis()));
+                amount, ZonedDateTime.now());
         transactionDAO.save(transaction);
     }
 
