@@ -5,44 +5,44 @@ import org.apache.log4j.Logger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * @author Evgeny Smerdov
  */
 public class DatabaseConnectionManager {
     private static final Logger logger = Logger.getLogger(DatabaseConnectionManager.class);
+    private static Connection connection;
+    private static String host;
+    private static String databaseName;
+    private static String username;
+    private static String password;
 
-    private final String host;
-    private final String username;
-    private final String password;
-    private final String databaseName;
-
-    /**
-     * This constructor assigns database user credentials
-     * @param host host of the database (localhost)
-     * @param username database owner username
-     * @param password database owner password
-     * @param databaseName the name of the database used
-     */
-    public DatabaseConnectionManager(String host, String username, String password, String databaseName) {
-        this.host = host;
-        this.username = username;
-        this.password = password;
-        this.databaseName = databaseName;
+    public static Connection getConnection() throws RuntimeException {
+        if (connection == null) {
+            setCredentials();
+            try {
+                Class.forName("org.postgresql.Driver");
+                connection = DriverManager.getConnection("jdbc:postgresql://" + host + "/" + databaseName, username, password);
+            } catch (ClassNotFoundException | SQLException ex) {
+                logger.error("postgresql driver was not connected or problems with database credentials", ex);
+                throw new RuntimeException(ex);
+            }
+        }
+        return connection;
     }
 
-    /**
-     * This method provides connection to the database
-     * @return connection to the database
-     * @throws SQLException if the connection is not provided.
-     */
-    public Connection getConnection() throws SQLException {
+    private static void setCredentials() {
         try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException ex) {
-            logger.error("postgresql driver was not connected", ex);
+            ResourceBundle resourceBundle = ResourceBundle.getBundle("application");
+            host = resourceBundle.getString("postgres.localhost");
+            databaseName = resourceBundle.getString("postgres.database");
+            username = resourceBundle.getString("postgres.username");
+            password = resourceBundle.getString("postgres.password");
+        } catch (MissingResourceException ex) {
+            logger.error("database resource configuration error", ex);
             throw new RuntimeException(ex);
         }
-        return DriverManager.getConnection("jdbc:postgresql://" + host + "/" + databaseName, username, password);
     }
 }
