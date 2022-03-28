@@ -5,7 +5,6 @@ import dao.users.UserDAO;
 import models.Transaction;
 import models.User;
 import org.apache.log4j.Logger;
-import utils.BdCredentials;
 import utils.DatabaseConnectionManager;
 
 import java.math.BigDecimal;
@@ -21,19 +20,11 @@ public class ApplicationService {
     private final TransactionDAO transactionDAO;
 
     public ApplicationService() {
-        DatabaseConnectionManager databaseConnectionManager =
-                new DatabaseConnectionManager(BdCredentials.getBdHost(), BdCredentials.getBdLogin(),
-                        BdCredentials.getBdPassword(), BdCredentials.getBdName());
         try {
-            userDAO = new UserDAO(databaseConnectionManager.getConnection());
-        } catch (SQLException ex) {
-            logger.error("userDAO was not connected to the database", ex);
-            throw new RuntimeException(ex);
-        }
-        try {
-            transactionDAO = new TransactionDAO(databaseConnectionManager.getConnection());
-        } catch (SQLException ex) {
-            logger.error("transactionDAO was not connected to the database", ex);
+            userDAO = new UserDAO(DatabaseConnectionManager.getConnection());
+            transactionDAO = new TransactionDAO(DatabaseConnectionManager.getConnection());
+        } catch (RuntimeException ex) {
+            logger.error("dao initialization error", ex);
             throw new RuntimeException(ex);
         }
     }
