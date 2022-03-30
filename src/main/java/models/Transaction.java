@@ -1,6 +1,7 @@
 package models;
 
 import dao.DataTransferObject;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import java.time.ZonedDateTime;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Transaction implements DataTransferObject {
     private long id;
     private long userid;
