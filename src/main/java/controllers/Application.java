@@ -29,7 +29,7 @@ public class Application extends HttpServlet {
             req.getMethod(), resp.getStatus(), req.getRequestURI(), resp.getLocale(), req.getRequestedSessionId()));
     List<User> userList = applicationService.getAllUsers();
     req.setAttribute("userList", userList);
-    req.getRequestDispatcher("view/index.jsp").forward(req, resp);
+    resp.sendRedirect("/");
   }
 
   @Override

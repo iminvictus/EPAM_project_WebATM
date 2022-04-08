@@ -29,7 +29,7 @@ public class Deposit extends HttpServlet {
         long id = Long.parseLong(req.getParameter("id"));
         User user = applicationService.getUserById(id);
         req.setAttribute("user", user);
-        req.getRequestDispatcher("view/deposit.jsp").forward(req, resp);
+        req.getRequestDispatcher("view/Deposit.jsp?=2").forward(req, resp);
     }
 
     @Override

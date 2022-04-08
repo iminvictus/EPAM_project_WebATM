@@ -26,10 +26,10 @@ public class WithdrawServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
                 request.getMethod(), response.getStatus(), request.getRequestURI(), response.getLocale(), request.getRequestedSessionId()));
-        long id = Long.parseLong(request.getParameter("id_withdrawAmount"));
+        long id = Long.parseLong(request.getParameter("id"));
         User user = applicationService.getUserById(id);
         request.setAttribute("user", user);
-        request.getRequestDispatcher("view/withdraw.jsp").forward(request, response);
+        request.getRequestDispatcher("view/Withdraw.jsp?id=2").forward(request, response);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class WithdrawServlet extends HttpServlet {
             logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
                     request.getMethod(), response.getStatus(), request.getRequestURI(), response.getLocale(), request.getRequestedSessionId()));
 
-            long id = Long.parseLong(request.getParameter("userId"));
+            long id = Long.parseLong(request.getParameter("id"));
             BigDecimal amountToWithdraw = BigDecimal.valueOf(Float.parseFloat(request.getParameter("amount")));
 
             applicationService.withdrawMoney(id, amountToWithdraw);
