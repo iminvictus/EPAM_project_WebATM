@@ -1,5 +1,6 @@
 package controllers;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import models.Transaction;
 import services.ApplicationService;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Log4j
+@AllArgsConstructor
 @WebServlet("/history")
 public class HistoryServlet extends HttpServlet {
     private ApplicationService histService;
