@@ -12,12 +12,15 @@ import java.util.ResourceBundle;
  * @author Evgeny Smerdov
  */
 @Log4j
-public class DatabaseConnectionManager {
+public final class DatabaseConnectionManager {
     private static Connection connection;
     private static String host;
     private static String databaseName;
     private static String username;
     private static String password;
+
+    private DatabaseConnectionManager() {
+    }
 
     public static Connection getConnection() throws RuntimeException {
         if (connection == null) {

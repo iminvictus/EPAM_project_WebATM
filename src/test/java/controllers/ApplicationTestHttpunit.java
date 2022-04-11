@@ -8,7 +8,6 @@ package controllers;
 * - you'll have to add js.jar to dependencies  in modules of project structure
 * */
 
-
 import org.junit.Test;
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
@@ -33,9 +32,5 @@ public class ApplicationTestHttpunit {
         WebResponse response = sc.getResponse(request);
         //Print out information
         System.out.println(response.getText());
-
     }
-
-
-
 }

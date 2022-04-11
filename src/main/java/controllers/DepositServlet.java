@@ -1,5 +1,6 @@
 package controllers;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import models.User;
 import services.ApplicationService;
@@ -13,8 +14,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 @Log4j
+@AllArgsConstructor
 @WebServlet("/deposit")
-public class Deposit extends HttpServlet {
+public class DepositServlet extends HttpServlet {
     private ApplicationService applicationService;
 
     @Override

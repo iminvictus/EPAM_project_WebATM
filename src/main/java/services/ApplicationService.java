@@ -2,6 +2,7 @@ package services;
 
 import dao.transactions.TransactionDAO;
 import dao.users.UserDAO;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import models.Transaction;
 import models.User;
@@ -12,6 +13,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 @Log4j
+@AllArgsConstructor
 public class ApplicationService {
     private final static IllegalArgumentException ZERO_OR_NEGATIVE = new IllegalArgumentException("value is zero or negative");
 
