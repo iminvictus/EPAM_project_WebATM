@@ -4,7 +4,8 @@ CREATE TABLE users
     name CHARACTER VARYING(50) NOT NULL,
     surname CHARACTER VARYING(50) NOT NULL,
     balance Decimal(15,2) NOT NULL,
-    CHECK ((Name != '') AND (Surname != ''))
+    role CHARACTER VARYING(20) NOT NULL,
+    CHECK ((Name != '') AND (Surname != '') AND (Role != ''))
 );
 
 CREATE TABLE transactions
@@ -14,4 +15,17 @@ CREATE TABLE transactions
     type CHARACTER VARYING (50) NOT NULL,
     amount DECIMAL (15,2) NOT NULL,
     time TIMESTAMPTZ NOT NULL
-)
+);
+
+CREATE TABLE cards
+(
+    id_card INTEGER PRIMARY KEY UNIQUE,
+    account DECIMAL (16),
+    balance Decimal(15,2) NOT NULL,
+    currency varchar(30) NOT NULL,
+    expiration_date date,
+    pincode DECIMAL (4),
+    id_user INTEGER NOT NULL,
+    FOREIGN KEY (id_user) references users (id)
+);
+

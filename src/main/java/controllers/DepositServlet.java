@@ -19,6 +19,10 @@ import java.math.BigDecimal;
 public class DepositServlet extends HttpServlet {
     private ApplicationService applicationService;
 
+    public DepositServlet() {
+
+    }
+
     @Override
     public void init() {
         applicationService = new ApplicationService();
@@ -28,10 +32,10 @@ public class DepositServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
                 req.getMethod(), resp.getStatus(), req.getRequestURI(), resp.getLocale(), req.getRequestedSessionId()));
-        long id = Long.parseLong(req.getParameter("id"));
-        User user = applicationService.getUserById(id);
-        req.setAttribute("user", user);
-        req.getRequestDispatcher("view/Deposit.jsp?=2").forward(req, resp);
+//        long id = Long.parseLong(req.getParameter("id"));
+//        User user = applicationService.getUserById(id);
+//        req.setAttribute("user", user);
+        req.getRequestDispatcher("view/Deposit.jsp").forward(req, resp);
     }
 
     @Override

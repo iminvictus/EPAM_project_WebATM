@@ -2,6 +2,7 @@ package dao.users;
 
 import dao.DataAccessObject;
 import lombok.extern.log4j.Log4j;
+import models.Role;
 import models.User;
 
 import java.math.BigDecimal;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Log4j
 public class UserDAO extends DataAccessObject<User> {
-    private static final String FIND_BY_ID = "SELECT id, name, surname, balance FROM users WHERE id = ?";
+    private static final String FIND_BY_ID = "SELECT id, name, surname, balance, role FROM users WHERE id = ?";
     private static final String FIND_ALL = "SELECT id, name, surname, balance FROM users";
     private static final String UPDATE_BALANCE = "UPDATE users SET balance = ? WHERE id = ?";
 
@@ -34,6 +35,7 @@ public class UserDAO extends DataAccessObject<User> {
                 user.setName(resultSet.getString("name"));
                 user.setSurname(resultSet.getString("surname"));
                 user.setBalance(resultSet.getBigDecimal("balance"));
+                user.setRole(Role.valueOf(resultSet.getString("role")));
             }
             logger.info("findById method was invoked in UserDAO");
             return user.getId() != 0 ? user : null;

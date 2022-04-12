@@ -19,8 +19,8 @@ public final class DatabaseConnectionManager {
     private static String username;
     private static String password;
 
-    private DatabaseConnectionManager() {
-    }
+//    private DatabaseConnectionManager() {
+//    }
 
     public static Connection getConnection() throws RuntimeException {
         if (connection == null) {

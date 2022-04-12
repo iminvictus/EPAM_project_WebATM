@@ -19,6 +19,9 @@ import java.math.BigDecimal;
 public class WithdrawServlet extends HttpServlet {
     private ApplicationService applicationService;
 
+    public WithdrawServlet() {
+    }
+
     @Override
     public void init() {
         applicationService = new ApplicationService();
@@ -28,10 +31,10 @@ public class WithdrawServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
                 request.getMethod(), response.getStatus(), request.getRequestURI(), response.getLocale(), request.getRequestedSessionId()));
-        long id = Long.parseLong(request.getParameter("id"));
-        User user = applicationService.getUserById(id);
-        request.setAttribute("user", user);
-        request.getRequestDispatcher("view/Withdraw.jsp?id=2").forward(request, response);
+//        long id = Long.parseLong(request.getParameter("id"));
+//        User user = applicationService.getUserById(id);
+//        request.setAttribute("user", user);
+        request.getRequestDispatcher("view/Withdraw.jsp").forward(request, response);
     }
 
     @Override
@@ -41,7 +44,7 @@ public class WithdrawServlet extends HttpServlet {
             logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
                     request.getMethod(), response.getStatus(), request.getRequestURI(), response.getLocale(), request.getRequestedSessionId()));
 
-            long id = Long.parseLong(request.getParameter("userId"));
+            long id = Long.parseLong(request.getParameter("id"));
             BigDecimal amountToWithdraw = new BigDecimal(request.getParameter("amount"));
 
             applicationService.withdrawMoney(id, amountToWithdraw);

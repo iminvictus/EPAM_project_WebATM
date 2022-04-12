@@ -35,7 +35,7 @@ public class WithdrawServletTest {
 
     @Test
     public void doGetWithdrawTest() throws ServletException, IOException {
-        User user = new User(1, "Ivan", "Ivanov", new BigDecimal(100));
+        User user = new User(1L, "Ivan", "Ivanov", new BigDecimal(100));
         String path = "view/withdraw.jsp";
 
         when(request.getParameter("id_withdrawAmount")).thenReturn("1");
