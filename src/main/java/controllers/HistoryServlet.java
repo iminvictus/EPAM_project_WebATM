@@ -18,6 +18,8 @@ import java.util.List;
 public class HistoryServlet extends HttpServlet {
     private ApplicationService histService;
 
+    public HistoryServlet(){}
+
     @Override
     public void init() {
         histService = new ApplicationService();

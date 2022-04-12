@@ -1,7 +1,7 @@
 <%@ page import="models.User" %>
 <%@ page import="models.Card" %>
-<%@ page import="services.ApplicationService" %>
 <%@ page import="java.math.BigDecimal" %>
+<%@ page import="services.ApplicationService" %>
 <!DOCTYPE html>
 <html style="font-size: 16px;">
   <head>
@@ -33,8 +33,7 @@
         <h2 class="u-align-center u-custom-font u-text u-text-default u-text-1">Uranus Bank</h2>
       </div></header> 
     <section class="u-clearfix u-image u-section-1" id="sec-4014" data-image-width="2000" data-image-height="1000">
-        <%
-            User user = (User) request.getSession().getAttribute("user");
+        <%User user = (User) request.getSession().getAttribute("user");
             Card card = (Card) request.getSession().getAttribute("approvedCard");
             ApplicationService applicationService = new ApplicationService();
             BigDecimal balance = applicationService.getUserById(user.getId()).getBalance();
@@ -48,6 +47,7 @@
         <a href="/view/Settings.jsp" data-page-id="54092570" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-4">Security</a>
         <a href="/" data-page-id="49464255" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-5">Payments</a>
         <a href="/history" data-page-id="836202084" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-6">Transactions</a>
+        <a href="/view/HistoryAdmin.jsp" data-page-id="54092571" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-7">Last 20 transactions</a>
         <p class="u-align-left u-text u-text-2">Transaction action result : _________________________________________</p>
         <a href="/logout" class="u-btn u-btn-round u-button-style u-hover-palette-1-light-1 u-palette-1-base u-radius-6 u-btn-8">Return card</a>
       </div>

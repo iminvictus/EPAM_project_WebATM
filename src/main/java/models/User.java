@@ -15,8 +15,16 @@ public class User implements DataTransferObject {
     private String name;
     private String surname;
     private BigDecimal balance;
+    private Role role;
 
     public User(String name, String surname, BigDecimal balance) {
+        this.name = name;
+        this.surname = surname;
+        this.balance = balance;
+    }
+
+    public User(Long id, String name, String surname, BigDecimal balance) {
+        this.id = id;
         this.name = name;
         this.surname = surname;
         this.balance = balance;

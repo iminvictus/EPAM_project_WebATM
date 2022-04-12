@@ -36,7 +36,7 @@ public class DepositServletTest {
 
     @Test
     public void doGetDepositTest() throws ServletException, IOException {
-        User user = new User(1, "Test1", "Test11", new BigDecimal(111));
+        User user = new User(1L, "Test1", "Test11", new BigDecimal(111));
         String path = "view/deposit.jsp";
 
         when(request.getParameter("id")).thenReturn("1");

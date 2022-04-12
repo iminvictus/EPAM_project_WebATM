@@ -1,5 +1,6 @@
 package services;
 
+import dao.cards.CardDAO;
 import dao.transactions.TransactionDAO;
 import dao.users.UserDAO;
 import java.math.BigDecimal;
@@ -28,6 +29,7 @@ public class ApplicationServiceTest {
     private User user;
     private UserDAO userDAO;
     private TransactionDAO transactionDAO;
+    private CardDAO cardDAO;
     private ApplicationService applicationService;
 
     @BeforeClass
@@ -67,7 +69,8 @@ public class ApplicationServiceTest {
     public void init() {
         transactionDAO = mock(TransactionDAO.class);
         userDAO = mock(UserDAO.class);
-        applicationService = new ApplicationService(userDAO, transactionDAO);
+        cardDAO = mock(CardDAO.class);
+        applicationService = new ApplicationService(userDAO, transactionDAO, cardDAO);
     }
 
     @Test
@@ -93,7 +96,8 @@ public class ApplicationServiceTest {
     public void getAllTransactions() {
         TransactionDAO transactionDAO = mock(TransactionDAO.class);
         UserDAO userDAO = mock(UserDAO.class);
-        applicationService = new ApplicationService(userDAO, transactionDAO);
+        CardDAO cardDAO = mock(CardDAO.class);
+        applicationService = new ApplicationService(userDAO, transactionDAO, cardDAO);
         when(transactionDAO.findAll()).thenReturn(histList);
         ArrayList<Transaction> listGot = (ArrayList<Transaction>) applicationService.getAllTransactions();
         Assert.assertTrue(listGot.size() > 0);
@@ -104,7 +108,7 @@ public class ApplicationServiceTest {
     public void getTransactionsByUserId() {
         TransactionDAO transactionDAO = mock(TransactionDAO.class);
         UserDAO userDAO = mock(UserDAO.class);
-        applicationService = new ApplicationService(userDAO, transactionDAO);
+        applicationService = new ApplicationService(userDAO, transactionDAO, cardDAO);
         long id = 1;
         when(transactionDAO.findByUserId(id)).thenReturn(histListId);
         ArrayList<Transaction> listGot = (ArrayList<Transaction>) applicationService.getTransactionsByUserId(id);
