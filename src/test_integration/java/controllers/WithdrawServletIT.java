@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WithdrawServletIT {
-    private static final String WITHDRAW_PATH = "view/withdraw.jsp";
+    private static final String WITHDRAW_PATH = "view/Withdraw.jsp";
 
     @Mock
     private UserDAO userDAO;
@@ -46,14 +46,14 @@ public class WithdrawServletIT {
         when(request.getParameter("userId")).thenReturn("1");
         when(request.getParameter("amount")).thenReturn("10");
         when(request.getRequestDispatcher(WITHDRAW_PATH)).thenReturn(dispatcher);
-        when(userDAO.findById(1L)).thenReturn(new User(1, "Ivan", "Ivanov", new BigDecimal(100)));
+        when(userDAO.findById(1L)).thenReturn(new User(1L, "Ivan", "Ivanov", new BigDecimal(100)));
     }
 
     @Test
     public void doWithdrawTest() throws ServletException, IOException {
         WithdrawServlet servlet = new WithdrawServlet(new ApplicationService(userDAO, transactionDAO));
         ArgumentCaptor <Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
-        User testUser = new User(1, "Ivan", "Ivanov", new BigDecimal(100));
+        User testUser = new User(1L, "Ivan", "Ivanov", new BigDecimal(100));
         servlet.doGet(request, response);
 
         verify(userDAO, times(1)).findById(1);

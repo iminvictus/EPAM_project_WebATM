@@ -34,6 +34,17 @@ public class ApplicationService {
         }
     }
 
+    public ApplicationService(UserDAO userDAO, TransactionDAO transactionDAO) {
+        this.userDAO = userDAO;
+        this.transactionDAO = transactionDAO;
+        try {
+            this.cardDAO = new CardDAO(DatabaseConnectionManager.getConnection());
+        } catch (RuntimeException ex) {
+            logger.error("dao initialization error", ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
     public List<User> getAllUsers() {
         List<User> userList = userDAO.findAll();
         return userList != null ? userList : List.of();

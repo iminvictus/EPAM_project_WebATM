@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DepositServletIT {
-    private static final String DEPOSIT_PATH = "view/deposit.jsp";
+    private static final String DEPOSIT_PATH = "view/Deposit.jsp";
     private DepositServlet servlet;
 
     @Mock
@@ -47,14 +47,14 @@ public class DepositServletIT {
         when(request.getParameter("id")).thenReturn("1");
         when(request.getParameter("amount")).thenReturn("111");
         when(request.getRequestDispatcher(DEPOSIT_PATH)).thenReturn(dispatcher);
-        when(userDAO.findById(1L)).thenReturn(new User(1, "Test1", "Test11", new BigDecimal(111)));
+        when(userDAO.findById(1L)).thenReturn(new User(1L, "Test1", "Test11", new BigDecimal(111)));
         servlet = new DepositServlet(new ApplicationService(userDAO, transactionDAO));
     }
 
     @Test
     public void doDepositTest() throws ServletException, IOException {
         ArgumentCaptor<Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
-        User testUser = new User(1, "Test1", "Test11", new BigDecimal(111));
+        User testUser = new User(1L, "Test1", "Test11", new BigDecimal(111));
         servlet.doGet(request, response);
 
         verify(userDAO, times(1)).findById(1);

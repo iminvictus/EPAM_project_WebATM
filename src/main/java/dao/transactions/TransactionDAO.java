@@ -22,11 +22,6 @@ public class TransactionDAO extends DataAccessObject<Transaction> {
     private static final String FIND_ALL = "SELECT id, userid, type, amount, time FROM transactions";
     private static final String INSERT = "INSERT INTO transactions (userid, type, amount, time) VALUES (?, ?, ?, ?)";
 
-    /**
-     * Establish connection to the DataAccessObject
-     *
-     * @param connection the connection to the database
-     */
     public TransactionDAO(Connection connection) {
         super(connection);
     }
@@ -64,8 +59,7 @@ public class TransactionDAO extends DataAccessObject<Transaction> {
                 transaction.setType(resultSet.getString("type"));
                 transaction.setAmount(resultSet.getBigDecimal("amount"));
                 transaction.setTime(ZonedDateTime.of(resultSet.getTimestamp("time").toLocalDateTime(), ZoneId.systemDefault()));
-                if (transaction.getUserid() == id)
-                    transactionsList.add(transaction);
+                transactionsList.add(transaction);
             }
             logger.info("findByUserId method was invoked in TransactionDAO");
             return transactionsList.size() != 0 ? transactionsList : null;

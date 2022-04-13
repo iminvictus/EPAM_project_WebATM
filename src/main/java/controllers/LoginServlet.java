@@ -28,8 +28,6 @@ public class LoginServlet extends HttpServlet {
         logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
                 req.getMethod(), resp.getStatus(), req.getRequestURI(), resp.getLocale(), req.getRequestedSessionId()));
        req.getRequestDispatcher("/view/LoginPage.jsp").forward(req, resp);
-
-        return;
     }
 
     @Override

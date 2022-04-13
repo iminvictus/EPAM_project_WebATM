@@ -3,7 +3,6 @@ package controllers;
 import lombok.extern.log4j.Log4j;
 import models.Role;
 import models.User;
-import org.apache.log4j.Logger;
 import services.ApplicationService;
 
 import jakarta.servlet.ServletException;
@@ -31,9 +30,12 @@ public class Application extends HttpServlet {
     List<User> userList = applicationService.getAllUsers();
     req.setAttribute("userList", userList);
     Role role = (Role) req.getSession().getAttribute("role");
-    if (role.equals(Role.ADMIN))
-    {resp.sendRedirect(req.getContextPath() + ("/view/HomeAdmin.jsp"));}
-    else {resp.sendRedirect(req.getContextPath() + ("/view/Home.jsp"));}
+    if (role.equals(Role.ADMIN)){
+      resp.sendRedirect(req.getContextPath() + ("/view/HomeAdmin.jsp"));
+    }
+    else {
+      resp.sendRedirect(req.getContextPath() + ("/view/Home.jsp"));
+    }
   }
 
   @Override
