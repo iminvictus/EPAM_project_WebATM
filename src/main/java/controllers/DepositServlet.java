@@ -1,6 +1,7 @@
 package controllers;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import models.User;
 import services.ApplicationService;
@@ -15,13 +16,10 @@ import java.math.BigDecimal;
 
 @Log4j
 @AllArgsConstructor
+@NoArgsConstructor
 @WebServlet("/deposit")
 public class DepositServlet extends HttpServlet {
     private ApplicationService applicationService;
-
-    public DepositServlet() {
-
-    }
 
     @Override
     public void init() {
@@ -32,26 +30,24 @@ public class DepositServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
                 req.getMethod(), resp.getStatus(), req.getRequestURI(), resp.getLocale(), req.getRequestedSessionId()));
-//        long id = Long.parseLong(req.getParameter("id"));
-//        User user = applicationService.getUserById(id);
-//        req.setAttribute("user", user);
-        req.getRequestDispatcher("view/Deposit.jsp").forward(req, resp);
+        long id = Long.parseLong(req.getParameter("id"));
+        User user = applicationService.getUserById(id);
+        if (user != null) {
+            req.setAttribute("user", user);
+            req.getRequestDispatcher("view/Deposit.jsp").forward(req, resp);
+        } else {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, String.format("NO SUCH USER WITH ID %d", id));
+        }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
-                    request.getMethod(), response.getStatus(), request.getRequestURI(), response.getLocale(), request.getRequestedSessionId()));
-
-            long id = Long.parseLong(request.getParameter("id"));
-            BigDecimal amountOfDeposit = new BigDecimal(request.getParameter("amount"));
-
-            applicationService.depositMoney(id, amountOfDeposit);
-            response.sendRedirect(request.getContextPath() + "/service");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
+                req.getMethod(), resp.getStatus(), req.getRequestURI(), resp.getLocale(), req.getRequestedSessionId()));
+        long id = Long.parseLong(req.getParameter("id"));
+        BigDecimal amountOfDeposit = new BigDecimal(req.getParameter("amount"));
+        applicationService.depositMoney(id, amountOfDeposit);
+        resp.sendRedirect(req.getContextPath() + "/service");
     }
 
     @Override

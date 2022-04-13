@@ -36,9 +36,9 @@ public class WithdrawServletTest {
     @Test
     public void doGetWithdrawTest() throws ServletException, IOException {
         User user = new User(1L, "Ivan", "Ivanov", new BigDecimal(100));
-        String path = "view/withdraw.jsp";
+        String path = "view/Withdraw.jsp";
 
-        when(request.getParameter("id_withdrawAmount")).thenReturn("1");
+        when(request.getParameter("id")).thenReturn("1");
         when(request.getRequestDispatcher(path)).thenReturn(dispatcher);
         when(service.getUserById(1)).thenReturn(user);
         when(request.getRequestDispatcher(path)).thenReturn(dispatcher);
@@ -52,7 +52,7 @@ public class WithdrawServletTest {
     }
 
     @Test
-    public void doPostWithdrawTest() throws IOException {
+    public void doPostWithdrawTest() throws IOException, ServletException {
         when(request.getParameter("userId")).thenReturn("1");
         when(request.getParameter("amount")).thenReturn("10");
         when(request.getContextPath()).thenReturn("test");

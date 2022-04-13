@@ -8,9 +8,7 @@ import java.sql.SQLException;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-/**
- * @author Evgeny Smerdov
- */
+
 @Log4j
 public final class DatabaseConnectionManager {
     private static Connection connection;

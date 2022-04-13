@@ -37,7 +37,7 @@ public class DepositServletTest {
     @Test
     public void doGetDepositTest() throws ServletException, IOException {
         User user = new User(1L, "Test1", "Test11", new BigDecimal(111));
-        String path = "view/deposit.jsp";
+        String path = "view/Deposit.jsp";
 
         when(request.getParameter("id")).thenReturn("1");
         when(request.getRequestDispatcher(path)).thenReturn(dispatcher);
@@ -53,7 +53,7 @@ public class DepositServletTest {
     }
 
     @Test
-    public void doPostDepositTest() throws IOException {
+    public void doPostDepositTest() throws IOException, ServletException {
         when(request.getParameter("id")).thenReturn("1");
         when(request.getParameter("amount")).thenReturn("111");
         when(request.getContextPath()).thenReturn("test");

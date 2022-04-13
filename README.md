@@ -18,25 +18,30 @@ How to run the ATM Service locally
    - enter the name of your configuration
    - specify the path to your Tomcat Server
    - specify the deployment directory to `/webapp`
-   - specify the context path to `/atm`
+   - specify the context path to `/`
    - specify the server port to `8080`
-3. Start the application and follow the link http://localhost:8080/atm
+3. Start the application and follow the link http://localhost:8080/
 
 To work with service correctly you have to create your own database in PostgreSQL.
 
 4. Open your QueryTool or SQL Shell (psql) and create database with name `atm_service`
 5. Connect to `atm_service` database and paste table schemas from file `V1_init_db.sql`.
-6. To insert some test data paste commands from file `fill_test_data.sql`
-    
-And also, when you work locally, the service needs to understand with which user and which database to work with.
-In application service `ApplicationService` you have to specify your host, username, password and database name.
-For example:
-```java
-DatabaseConnectionManager databaseConnectionManager = new DatabaseConnectionManager("localhost", "postgres", "admin", "atm_service");
-```
+6. To insert some test data paste commands from file `fill_test_data.sql` 
 
 ## Functionality
 
-ATM status page will show general information about ATM users:
-   - request is GET-method on http://localhost:8080/atm/service (without parameters)
-   - response is JSP page showing information about ATM users
+ATM main page:
+   - request is GET-method on http://localhost:8080/ 
+   - response is JSP page showing general functionality of ATM and user data
+
+ATM deposit page:
+- request is GET-method on http://localhost:8080/deposit
+- response is JSP page providing the opportunity to deposit money into the user's account
+
+ATM withdraw page:
+- request is GET-method on http://localhost:8080/withdraw
+- response is JSP page providing the opportunity to withdraw money from the user's account
+
+ATM transaction history page:
+- request is GET-method on http://localhost:8080/history 
+- response is JSP page providing the opportunity to view the entire transaction history of the user

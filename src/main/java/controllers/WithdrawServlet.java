@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import models.User;
 
@@ -15,12 +16,10 @@ import java.math.BigDecimal;
 
 @Log4j
 @AllArgsConstructor
+@NoArgsConstructor
 @WebServlet("/withdraw")
 public class WithdrawServlet extends HttpServlet {
     private ApplicationService applicationService;
-
-    public WithdrawServlet() {
-    }
 
     @Override
     public void init() {
@@ -28,30 +27,34 @@ public class WithdrawServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
-                request.getMethod(), response.getStatus(), request.getRequestURI(), response.getLocale(), request.getRequestedSessionId()));
-//        long id = Long.parseLong(request.getParameter("id"));
-//        User user = applicationService.getUserById(id);
-//        request.setAttribute("user", user);
-        request.getRequestDispatcher("view/Withdraw.jsp").forward(request, response);
+                req.getMethod(), resp.getStatus(), req.getRequestURI(), resp.getLocale(), req.getRequestedSessionId()));
+        long id = Long.parseLong(req.getParameter("id"));
+        User user = applicationService.getUserById(id);
+        if (user != null) {
+            req.setAttribute("user", user);
+            req.getRequestDispatcher("view/Withdraw.jsp").forward(req, resp);
+        } else {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, String.format("NO SUCH USER WITH ID %d", id));
+        }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-
-        try {
-            logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
-                    request.getMethod(), response.getStatus(), request.getRequestURI(), response.getLocale(), request.getRequestedSessionId()));
-
-            long id = Long.parseLong(request.getParameter("id"));
-            BigDecimal amountToWithdraw = new BigDecimal(request.getParameter("amount"));
-
-            applicationService.withdrawMoney(id, amountToWithdraw);
-            response.sendRedirect(request.getContextPath() + "/service");
-        } catch (IOException ex) {
-            logger.error("IOException", ex);
-            throw new RuntimeException(ex);
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
+                req.getMethod(), resp.getStatus(), req.getRequestURI(), resp.getLocale(), req.getRequestedSessionId()));
+        long id = Long.parseLong(req.getParameter("id"));
+        User user = applicationService.getUserById(id);
+        BigDecimal amount = new BigDecimal(req.getParameter("amount"));
+        if (user.getBalance().compareTo(amount) < 0) {
+            req.setAttribute("user", user);
+            req.setAttribute("error_amount", "Not enough money on the card");
+            req.getRequestDispatcher("view/Withdraw.jsp").forward(req, resp);
+        } else {
+            BigDecimal amountOfWithdraw = new BigDecimal(req.getParameter("amount"));
+            applicationService.withdrawMoney(id, amountOfWithdraw);
+            resp.sendRedirect(req.getContextPath() + "/service");
         }
     }
 
