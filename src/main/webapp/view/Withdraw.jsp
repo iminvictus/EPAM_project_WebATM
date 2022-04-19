@@ -38,8 +38,7 @@
       <div class="u-align-left u-clearfix u-sheet u-sheet-1">
         <h1 class="u-text u-text-default u-text-1">Withdraw</h1>
         <div class="u-form u-form-1">
-            <%User user = (User) request.getSession().getAttribute("user");%>
-          <form action="/withdraw?id=${user.id}" method="POST" class="u-clearfix u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form" style="padding: 10px;">
+          <form action="/withdraw?id=${approvedCard.id}" method="POST" class="u-clearfix u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form" style="padding: 10px;">
             <div class="u-form-group u-form-name">
               <label for="name-d860" class="u-label">Amount</label>
               <input type="number" min="1" max="1000000" required placeholder="Withdraw amount" id="name-d860" name="amount" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">

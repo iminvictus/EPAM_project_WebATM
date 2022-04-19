@@ -11,6 +11,7 @@ import java.util.List;
 import lombok.extern.log4j.Log4j;
 import models.Card;
 import models.CardCurrency;
+import models.User;
 
 
 @Log4j
@@ -20,11 +21,12 @@ public class CardDAO extends DataAccessObject<Card> {
     private static final String FIND_ALL = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards";
     private static final String FIND_USER_ID_BY_CARD_AND_PIN = "SELECT id_user FROM cards WHERE account = ? AND pincode = ?";
     private static final String FIND_CARD_BY_ACC_AND_PIN = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE account = ? AND pincode = ?";
-
+    private static final String UPDATE_BALANCE = "UPDATE cards SET balance = ? WHERE id_card = ?";
 
     public CardDAO(Connection connection) {
         super(connection);
     }
+
     @Override
     public Card findById(long id) {
         try {
@@ -37,13 +39,13 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
                 card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
-                card.setExpiration(resultSet.getTime("expiration_date"));
+                card.setExpiration(resultSet.getDate("expiration_date"));
                 card.setUserid(resultSet.getLong("id_user"));
-                card.setPincode(resultSet.getBigDecimal("pincode"));
+                card.setPincode(resultSet.getString("pincode"));
 
             }
             logger.info("findById method was invoked in CardDAO");
-            return card.getId() != 0 ? card : null;
+            return card.getId() != null ? card : null;
         } catch (SQLException ex) {
             logger.error("sql exception", ex);
             throw new RuntimeException(ex);
@@ -62,8 +64,8 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
                 card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
-                card.setExpiration(resultSet.getTime("expiration_date"));
-                card.setPincode(resultSet.getBigDecimal("pincode"));
+                card.setExpiration(resultSet.getDate("expiration_date"));
+                card.setPincode(resultSet.getString("pincode"));
                 card.setUserid(resultSet.getLong("id_user"));
                 cardsList.add(card);
             }
@@ -86,8 +88,8 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
                 card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
-                card.setExpiration(resultSet.getTime("expiration_date"));
-                card.setPincode(resultSet.getBigDecimal("pincode"));
+                card.setExpiration(resultSet.getDate("expiration_date"));
+                card.setPincode(resultSet.getString("pincode"));
                 card.setUserid(resultSet.getLong("id_user"));
                 if (card.getUserid() == id)
                     cardsListId.add(card);
@@ -100,11 +102,11 @@ public class CardDAO extends DataAccessObject<Card> {
         }
     }
 
-    public Long findUserId(BigDecimal account, BigDecimal pincode) {
+    public Long findUserId(BigDecimal account, String pincode) {
         Long userId = 0L;
         try (PreparedStatement statement = this.connection.prepareStatement(FIND_USER_ID_BY_CARD_AND_PIN)) {
             statement.setBigDecimal(1, account);
-            statement.setBigDecimal(2, pincode);
+            statement.setString(2, pincode);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 userId = resultSet.getLong("id_user");
@@ -118,11 +120,11 @@ public class CardDAO extends DataAccessObject<Card> {
         return userId;
     }
 
-    public Card findCardByAccAndPin(BigDecimal account, BigDecimal pincode) {
+    public Card findCardByAccAndPin(BigDecimal account, String pincode) {
         try {
             PreparedStatement statement = this.connection.prepareStatement(FIND_CARD_BY_ACC_AND_PIN);
             statement.setBigDecimal(1, account);
-            statement.setBigDecimal(2, pincode);
+            statement.setString(2, pincode);
             ResultSet resultSet = statement.executeQuery();
             Card card = new Card();
             while (resultSet.next()) {
@@ -130,13 +132,40 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
                 card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
-                card.setExpiration(resultSet.getTime("expiration_date"));
+                card.setExpiration(resultSet.getDate("expiration_date"));
                 card.setUserid(resultSet.getLong("id_user"));
-                card.setPincode(resultSet.getBigDecimal("pincode"));
+                card.setPincode(resultSet.getString("pincode"));
 
             }
             logger.info("findById method was invoked in CardDAO");
             return card.getId() != null ? card : null;
+        } catch (SQLException ex) {
+            logger.error("sql exception", ex);
+            throw new RuntimeException(ex);
+        }
+    }
+    public void depositMoney(long id, BigDecimal amount) {
+        try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_BALANCE)) {
+            Card card = findById(id);
+            BigDecimal newBalance = card.getBalance().add(amount);
+            statement.setBigDecimal(1, newBalance);
+            statement.setLong(2, id);
+            logger.info("depositMoney method was invoked in CardDAO");
+            statement.execute();
+        } catch (SQLException ex) {
+            logger.error("sql exception", ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public void withdrawMoney(long id, BigDecimal amount) {
+        try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_BALANCE)) {
+            Card card = findById(id);
+            BigDecimal newBalance = card.getBalance().subtract(amount);
+            statement.setBigDecimal(1, newBalance);
+            statement.setLong(2, id);
+            logger.info("withDrawMoney method was invoked in CardDAO");
+            statement.execute();
         } catch (SQLException ex) {
             logger.error("sql exception", ex);
             throw new RuntimeException(ex);

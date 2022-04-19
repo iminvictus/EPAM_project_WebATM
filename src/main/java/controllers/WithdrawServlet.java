@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import models.Card;
 import models.User;
 
 import services.ApplicationService;
@@ -45,10 +46,10 @@ public class WithdrawServlet extends HttpServlet {
         logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
                 req.getMethod(), resp.getStatus(), req.getRequestURI(), resp.getLocale(), req.getRequestedSessionId()));
         long id = Long.parseLong(req.getParameter("id"));
-        User user = applicationService.getUserById(id);
+        Card card = (Card) req.getSession().getAttribute("approvedCard");
         BigDecimal amount = new BigDecimal(req.getParameter("amount"));
-        if (user.getBalance().compareTo(amount) < 0) {
-            req.setAttribute("user", user);
+        if (card.getBalance().compareTo(amount) < 0) {
+
             req.setAttribute("error_amount", "Not enough money on the card");
             req.getRequestDispatcher("view/Withdraw.jsp").forward(req, resp);
         } else {

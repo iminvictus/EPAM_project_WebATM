@@ -1,5 +1,6 @@
 package controllers;
 
+import dao.cards.CardDAO;
 import dao.transactions.TransactionDAO;
 import dao.users.UserDAO;
 import jakarta.servlet.RequestDispatcher;
@@ -30,6 +31,7 @@ public class HistoryServletIT {
     private HistoryServlet historyServlet;
     private UserDAO userDAO;
     private TransactionDAO transactionDAO;
+    private CardDAO cardDAO;
     private HttpServletRequest request;
     private HttpServletResponse response;
     private RequestDispatcher dispatcher;
@@ -57,7 +59,8 @@ public class HistoryServletIT {
 
         userDAO = mock(UserDAO.class);
         transactionDAO = mock(TransactionDAO.class);
-        historyServlet = new HistoryServlet(new ApplicationService(userDAO, transactionDAO));
+        cardDAO = mock(CardDAO.class);
+        historyServlet = new HistoryServlet(new ApplicationService(userDAO, transactionDAO, cardDAO));
     }
 
     @Test

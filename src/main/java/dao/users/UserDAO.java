@@ -16,9 +16,9 @@ import java.util.List;
 
 @Log4j
 public class UserDAO extends DataAccessObject<User> {
-    private static final String FIND_BY_ID = "SELECT id, name, surname, balance, role FROM users WHERE id = ?";
-    private static final String FIND_ALL = "SELECT id, name, surname, balance FROM users";
-    private static final String UPDATE_BALANCE = "UPDATE users SET balance = ? WHERE id = ?";
+    private static final String FIND_BY_ID = "SELECT id, name, surname, role FROM users WHERE id = ?";
+    private static final String FIND_ALL = "SELECT id, name, surname, role FROM users";
+
 
     public UserDAO(Connection connection) {
         super(connection);
@@ -34,7 +34,6 @@ public class UserDAO extends DataAccessObject<User> {
                 user.setId(resultSet.getLong("id"));
                 user.setName(resultSet.getString("name"));
                 user.setSurname(resultSet.getString("surname"));
-                user.setBalance(resultSet.getBigDecimal("balance"));
                 user.setRole(Role.valueOf(resultSet.getString("role")));
             }
             logger.info("findById method was invoked in UserDAO");
@@ -55,7 +54,7 @@ public class UserDAO extends DataAccessObject<User> {
                 user.setId(resultSet.getLong("id"));
                 user.setName(resultSet.getString("name"));
                 user.setSurname(resultSet.getString("surname"));
-                user.setBalance(resultSet.getBigDecimal("balance"));
+                user.setRole(Role.valueOf(resultSet.getString("role")));
                 userList.add(user);
             }
             logger.info("findAll method was invoked in UserDAO");
@@ -66,31 +65,4 @@ public class UserDAO extends DataAccessObject<User> {
         }
     }
 
-    public void depositMoney(long id, BigDecimal amount) {
-        try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_BALANCE)) {
-            User user = findById(id);
-            BigDecimal newBalance = user.getBalance().add(amount);
-            statement.setBigDecimal(1, newBalance);
-            statement.setLong(2, id);
-            logger.info("depositMoney method was invoked in UserDAO");
-            statement.execute();
-        } catch (SQLException ex) {
-            logger.error("sql exception", ex);
-            throw new RuntimeException(ex);
-        }
-    }
-
-    public int withdrawMoney(long id, BigDecimal amount) {
-        try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_BALANCE)) {
-            User user = findById(id);
-            BigDecimal newBalance = user.getBalance().subtract(amount);
-            statement.setBigDecimal(1, newBalance);
-            statement.setLong(2, id);
-            logger.info("withDrawMoney method was invoked in UserDAO");
-            return statement.executeUpdate();
-        } catch (SQLException ex) {
-            logger.error("sql exception", ex);
-            throw new RuntimeException(ex);
-        }
-    }
 }

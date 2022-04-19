@@ -1,5 +1,6 @@
 <%@ page language="java" errorPage="error.jsp"%>
 <%@ page import="models.User" %>
+<%@ page import="models.Card" %>
 <!DOCTYPE html>
 <html style="font-size: 16px;">
   <head>
@@ -9,9 +10,9 @@
     <meta name="description" content="">
     <meta name="page_type" content="np-template-header-footer-from-plugin">
     <title>Deposit</title>
-    <link rel="stylesheet" href="view/nicepage.css" media="screen">
-<link rel="stylesheet" href="view/Deposit.css" media="screen">
-    <script class="u-script" type="text/javascript" src="view/nicepage.js" defer=""></script>
+    <link rel="stylesheet" href="/view/nicepage.css" media="screen">
+<link rel="stylesheet" href="/view/Deposit.css" media="screen">
+    <script class="u-script" type="text/javascript" src="/view/nicepage.js" defer=""></script>
     <meta name="generator" content="Nicepage 4.7.1, nicepage.com">
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
     <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Berkshire+Swash:400">
@@ -33,8 +34,7 @@
       <div class="u-align-left u-clearfix u-sheet u-sheet-1">
         <h1 class="u-text u-text-default u-text-1">Deposit</h1>
         <div class="u-form u-form-1">
-            <%User user = (User) request.getSession().getAttribute("user");%>
-          <form action="/deposit?id=${user.id}" method="POST" class="u-clearfix u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form" style="padding: 10px;">
+          <form action="/deposit?id=${approvedCard.id}" method="POST" class="u-clearfix u-form-spacing-10 u-form-vertical u-inner-form" source="custom" name="form" style="padding: 10px;">
             <div class="u-form-group u-form-name">
               <label for="name-d860" class="u-label">Amount</label>
               <input type="number" min="1" max="1000000" required placeholder="Deposit amount" id="name-d860" name="amount" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">

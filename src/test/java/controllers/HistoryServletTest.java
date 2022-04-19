@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import services.ApplicationService;
+
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -50,28 +51,29 @@ public class HistoryServletTest {
         histList.add(transaction3);
         histList.add(transaction4);
         histListId = new ArrayList<>();
-        for (Transaction tr: histList) {
-            if(tr.getUserid() == 1) histListId.add(tr);
-       }
+        for (Transaction tr : histList) {
+            if (tr.getUserid() == 1) histListId.add(tr);
+        }
     }
 
     @Test
     public void doHistoryTest() throws ServletException, IOException {
+        //given
         when(applicationService.getAllTransactions()).thenReturn(histList);
         when(applicationService.getTransactionsByUserId(1)).thenReturn(histListId);
         when(request.getAttribute("histList")).thenReturn(histList);
         when(request.getAttribute("histListId")).thenReturn(histListId);
         when(request.getRequestDispatcher(path)).thenReturn(dispatcher);
-
+        //when
         historyServlet.doGet(request, response);
-        List<Transaction> histListGot = (ArrayList<Transaction>)request.getAttribute("histList");
-        List<Transaction> histListIdGot = (ArrayList<Transaction>)request.getAttribute("histListId");
-
+        List<Transaction> histListGot = (ArrayList<Transaction>) request.getAttribute("histList");
+        List<Transaction> histListIdGot = (ArrayList<Transaction>) request.getAttribute("histListId");
+        //then
         verify(request, times(1)).getAttribute("histList");
         verify(request, times(1)).getAttribute("histListId");
 
-        Assert.assertTrue(histListGot.size()>0);
-        Assert.assertTrue(histListIdGot.size()>0);
+        Assert.assertTrue(histListGot.size() > 0);
+        Assert.assertTrue(histListIdGot.size() > 0);
         Assert.assertEquals(histListGot, histList);
         Assert.assertEquals(histListIdGot, histListId);
     }

@@ -6,7 +6,10 @@ import dao.users.UserDAO;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
+import models.Card;
+import models.CardCurrency;
 import models.Transaction;
 import models.User;
 import org.junit.Assert;
@@ -26,7 +29,8 @@ public class ApplicationServiceTest {
     private static List<Transaction> histList;
     private static List<Transaction> histListId;
     private static List<User> usersList;
-    private User user;
+    private static List<Card> cardsList;
+    private Card card;
     private UserDAO userDAO;
     private TransactionDAO transactionDAO;
     private CardDAO cardDAO;
@@ -54,15 +58,26 @@ public class ApplicationServiceTest {
         }
         //users' list
         usersList = new ArrayList<>();
-        User user1 = new User("Mike", "Mayers", new BigDecimal(1000));
-        user1.setId(1);
-        User user2 = new User("Spike", "Spayers", new BigDecimal(2000));
-        user2.setId(2);
-        User user3 = new User("John", "Smith", new BigDecimal(3000));
-        user3.setId(3);
+        User user1 = new User(1L,"Mike", "Mayers");
+
+        User user2 = new User(2L,"Spike", "Spayers");
+
+        User user3 = new User(3L,"John", "Smith");
+
         usersList.add(user1);
         usersList.add(user2);
         usersList.add(user3);
+
+        //cards' list
+        cardsList = new ArrayList<>();
+        Card card1 = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(11111), "4000", 1L);
+        Card card2 = new Card(2L, new BigDecimal("1234567890123457"), new BigDecimal(15000), CardCurrency.RUR, new Date(11111), "4000", 2L);
+        Card card3 = new Card(3L, new BigDecimal("1234567890123458"), new BigDecimal(20000), CardCurrency.RUR, new Date(11111), "4000", 3L);
+
+        cardsList.add(card1);
+        cardsList.add(card2);
+        cardsList.add(card3);
+
     }
 
     @Before
@@ -75,86 +90,120 @@ public class ApplicationServiceTest {
 
     @Test
     public void getAllUsers() {
+        //given
         when(userDAO.findAll()).thenReturn(usersList);
+        //when
         ArrayList<User> listGot = (ArrayList<User>) applicationService.getAllUsers();
+        //then
         Assert.assertTrue(listGot.size() > 0);
         Assert.assertEquals(listGot, usersList);
     }
 
     @Test
     public void getUserById() {
+        //given
         User user = usersList.get(0);
         long id = usersList.get(0).getId();
         when(userDAO.findById(id)).thenReturn(user);
+        //when
         User userGot = applicationService.getUserById(id);
-
+        //then
         Assert.assertNotNull(userGot);
         Assert.assertEquals(userGot, user);
     }
 
     @Test
     public void getAllTransactions() {
+        //given
         TransactionDAO transactionDAO = mock(TransactionDAO.class);
         UserDAO userDAO = mock(UserDAO.class);
         CardDAO cardDAO = mock(CardDAO.class);
         applicationService = new ApplicationService(userDAO, transactionDAO, cardDAO);
         when(transactionDAO.findAll()).thenReturn(histList);
+        //when
         ArrayList<Transaction> listGot = (ArrayList<Transaction>) applicationService.getAllTransactions();
+        //then
         Assert.assertTrue(listGot.size() > 0);
         Assert.assertEquals(listGot, histList);
     }
 
     @Test
     public void getTransactionsByUserId() {
+        //given
         TransactionDAO transactionDAO = mock(TransactionDAO.class);
         UserDAO userDAO = mock(UserDAO.class);
         applicationService = new ApplicationService(userDAO, transactionDAO, cardDAO);
         long id = 1;
         when(transactionDAO.findByUserId(id)).thenReturn(histListId);
+        //when
         ArrayList<Transaction> listGot = (ArrayList<Transaction>) applicationService.getTransactionsByUserId(id);
+        //then
         Assert.assertTrue(listGot.size() > 0);
         Assert.assertEquals(listGot, histListId);
     }
 
     @Test
     public void getTransactionById() {
+        //given
         long id = histList.get(0).getId();
         Transaction transaction = histList.get(0);
         when(transactionDAO.findById(id)).thenReturn(transaction);
+        //when
         Transaction transactionGot = applicationService.getTransactionById(id);
+        //then
         Assert.assertNotNull(transactionGot);
         Assert.assertEquals(transaction, transactionGot);
     }
 
     @Test
     public void depositMoneyTest() {
+        //given
         doAnswer(invocation -> {
             long id = invocation.getArgument(0);
             BigDecimal amount = invocation.getArgument(1);
 
             Assert.assertEquals(1L, id);
             Assert.assertEquals(new BigDecimal(100), amount);
-            for (User userNew: usersList) {
-                if (userNew.getId() == id) {
-                    userNew.setBalance(userNew.getBalance().add(amount));
-                    user = userNew;
+            for (Card cardNew: cardsList) {
+                if (cardNew.getId() == id) {
+                    cardNew.setBalance(cardNew.getBalance().add(amount));
+                    card = cardNew;
                     break;
                 }
             }
-            return user;
-        }).when(userDAO).depositMoney(any(Long.class), any(BigDecimal.class));
+            return card;
+        }).when(cardDAO).depositMoney(any(Long.class), any(BigDecimal.class));
+        //when
         applicationService.depositMoney(1L, new BigDecimal(100));
-        verify(userDAO, times(1)).depositMoney(1L, new BigDecimal(100));
-        Assert.assertNotNull(user);
-        Assert.assertEquals(user.getId(), 1);
+        //then
+        verify(cardDAO, times(1)).depositMoney(1L, new BigDecimal(100));
+        Assert.assertNotNull(card);
+        Assert.assertTrue(card.getId()==1L);
     }
 
     @Test
     public void withdrawMoney() {
-        long id = 1;
-        BigDecimal amount = new BigDecimal(100);
-        when(userDAO.withdrawMoney(id, amount)).thenReturn(1);
-        applicationService.withdrawMoney(id, amount);
-        verify(userDAO, times(1)).withdrawMoney(id, amount);
+        //given
+        doAnswer(invocation -> {
+            long id = invocation.getArgument(0);
+            BigDecimal amount = invocation.getArgument(1);
+
+            Assert.assertEquals(1L, id);
+            Assert.assertEquals(new BigDecimal(100), amount);
+            for (Card cardNew: cardsList) {
+                if (cardNew.getId() == id) {
+                    cardNew.setBalance(cardNew.getBalance().subtract(amount));
+                    card = cardNew;
+                    break;
+                }
+            }
+            return card;
+        }).when(cardDAO).withdrawMoney(any(Long.class), any(BigDecimal.class));
+        //when
+        applicationService.withdrawMoney(1L, new BigDecimal(100));
+        //then
+        verify(cardDAO, times(1)).withdrawMoney(1L, new BigDecimal(100));
+        Assert.assertNotNull(card);
+        Assert.assertTrue(card.getId()==1L);
     }
 }

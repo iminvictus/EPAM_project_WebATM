@@ -37,7 +37,7 @@
             User user = (User) request.getSession().getAttribute("user");
             Card card = (Card) request.getSession().getAttribute("approvedCard");
             ApplicationService applicationService = new ApplicationService();
-            BigDecimal balance = applicationService.getUserById(user.getId()).getBalance();
+            BigDecimal balance = applicationService.getCardById(card.getId()).getBalance();
         %>
         <div class="u-align-left u-clearfix u-sheet u-sheet-1">
         <a href="/view/Withdraw.jsp" data-page-id="160218685" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-1">Withdraw</a>

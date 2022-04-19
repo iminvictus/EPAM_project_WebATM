@@ -2,7 +2,7 @@ package models;
 
 import dao.DataTransferObject;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +16,6 @@ public class Card implements DataTransferObject {
     private BigDecimal balance;
     private CardCurrency currency;
     private Date expiration;
-    private BigDecimal pincode;
+    private String pincode;
     private Long userid;
 }
