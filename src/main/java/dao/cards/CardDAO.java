@@ -17,6 +17,7 @@ import models.User;
 @Log4j
 public class CardDAO extends DataAccessObject<Card> {
     private static final String FIND_BY_ID = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE id_card = ?";
+    private static final String FIND_BY_ACCOUNT = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE account = ?";
     private static final String FIND_BY_USER_ID = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE id_user = ?";
     private static final String FIND_ALL = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards";
     private static final String FIND_USER_ID_BY_CARD_AND_PIN = "SELECT id_user FROM cards WHERE account = ? AND pincode = ?";
@@ -46,6 +47,30 @@ public class CardDAO extends DataAccessObject<Card> {
             }
             logger.info("findById method was invoked in CardDAO");
             return card.getId() != null ? card : null;
+        } catch (SQLException ex) {
+            logger.error("sql exception", ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public Card findByAccount(BigDecimal account) {
+        try {
+            PreparedStatement statement = this.connection.prepareStatement(FIND_BY_ACCOUNT);
+            statement.setBigDecimal(1, account);
+            ResultSet resultSet = statement.executeQuery();
+            Card card = new Card();
+            while (resultSet.next()) {
+                card.setId(resultSet.getLong("id_card"));
+                card.setAccount(resultSet.getBigDecimal("account"));
+                card.setBalance(resultSet.getBigDecimal("balance"));
+                card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
+                card.setExpiration(resultSet.getDate("expiration_date"));
+                card.setUserid(resultSet.getLong("id_user"));
+                card.setPincode(resultSet.getString("pincode"));
+
+            }
+            logger.info("findById method was invoked in CardDAO");
+            return card.getAccount() != null ? card : null;
         } catch (SQLException ex) {
             logger.error("sql exception", ex);
             throw new RuntimeException(ex);
