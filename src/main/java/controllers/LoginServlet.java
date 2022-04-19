@@ -7,6 +7,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 import models.Card;
 import models.Role;
@@ -35,7 +40,7 @@ public class LoginServlet extends HttpServlet {
         logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
                 req.getMethod(), resp.getStatus(), req.getRequestURI(), resp.getLocale(), req.getRequestedSessionId()));
         BigDecimal account = new BigDecimal(req.getParameter("account"));
-        BigDecimal pincode = new BigDecimal(req.getParameter("pincode"));
+        String pincode = convertToMD5(req.getParameter("pincode"));
         Card card = applicationService.getCardByAccountAndPin(account, pincode);
 
         if (card != null) {
@@ -49,9 +54,18 @@ public class LoginServlet extends HttpServlet {
 
             req.setAttribute("errorMessage", errorMessage);
 
-            req.getRequestDispatcher("view/LoginPage.jsp").forward(req, resp);
-            return;
+            req.getRequestDispatcher("/view/LoginPage.jsp").forward(req, resp);
         }
 
+    }
+
+
+    @SneakyThrows
+    private static String convertToMD5 (String str){
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.update(str.getBytes());
+        byte[] digest = messageDigest.digest();
+        BigInteger bigInt = new BigInteger(1, digest);
+        return bigInt.toString(16);
     }
 }

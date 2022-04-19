@@ -20,7 +20,7 @@ public class LogoutServlet extends HttpServlet {
                 request.getMethod(), response.getStatus(), request.getRequestURI(), response.getLocale(), request.getRequestedSessionId()));
         request.getSession().invalidate();
 
-        // Redrect to login page.
+        // Redirect to login page.
         response.sendRedirect(request.getContextPath() + "/login");
 
     }

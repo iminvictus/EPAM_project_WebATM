@@ -12,7 +12,7 @@ public class CardUtils {
         ApplicationService applicationService = new ApplicationService();
         session.setAttribute("approvedCard", approvedCard);
         BigDecimal account = approvedCard.getAccount();
-        BigDecimal pincode = approvedCard.getPincode();
+        String pincode = approvedCard.getPincode();
         Long userId = applicationService.getUserIdByAccountAndPin(account, pincode);
         User user = applicationService.getUserById(userId);
         session.setAttribute("user", user);

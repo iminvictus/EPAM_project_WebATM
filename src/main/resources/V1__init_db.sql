@@ -3,7 +3,6 @@ CREATE TABLE users
     id INTEGER PRIMARY KEY,
     name CHARACTER VARYING(50) NOT NULL,
     surname CHARACTER VARYING(50) NOT NULL,
-    balance Decimal(15,2) NOT NULL,
     role CHARACTER VARYING(20) NOT NULL,
     CHECK ((Name != '') AND (Surname != '') AND (Role != ''))
 );
@@ -24,8 +23,10 @@ CREATE TABLE cards
     balance Decimal(15,2) NOT NULL,
     currency varchar(30) NOT NULL,
     expiration_date date,
-    pincode DECIMAL (4),
+    pincode VARCHAR (32),
     id_user INTEGER NOT NULL,
     FOREIGN KEY (id_user) references users (id)
 );
+
+
 

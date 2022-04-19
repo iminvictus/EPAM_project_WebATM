@@ -36,16 +36,16 @@ public class DepositServletTest {
 
     @Test
     public void doGetDepositTest() throws ServletException, IOException {
-        User user = new User(1L, "Test1", "Test11", new BigDecimal(111));
+        //given
+        User user = new User(1L, "Test1", "Test11");
         String path = "view/Deposit.jsp";
 
         when(request.getParameter("id")).thenReturn("1");
-        when(request.getRequestDispatcher(path)).thenReturn(dispatcher);
         when(service.getUserById(1)).thenReturn(user);
         when(request.getRequestDispatcher(path)).thenReturn(dispatcher);
-
+        //when
         servlet.doGet(request, response);
-
+        //then
         verify(service, atLeast(1)).getUserById(1);
         verify(request, atLeast(1)).setAttribute("user", user);
         verify(request, atLeast(1)).getRequestDispatcher(path);
@@ -54,12 +54,13 @@ public class DepositServletTest {
 
     @Test
     public void doPostDepositTest() throws IOException, ServletException {
+        //given
         when(request.getParameter("id")).thenReturn("1");
         when(request.getParameter("amount")).thenReturn("111");
         when(request.getContextPath()).thenReturn("test");
-
+        //when
         servlet.doPost(request, response);
-
+        //then
         verify(request, atLeast(1)).getParameter("id");
         verify(request, atLeast(1)).getParameter("amount");
         verify(service, atLeast(1)).depositMoney(1, new BigDecimal(111));

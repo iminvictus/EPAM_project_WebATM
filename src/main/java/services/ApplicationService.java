@@ -77,14 +77,14 @@ public class ApplicationService {
     }
 
     public void depositMoney(long id, BigDecimal amount) {
-        userDAO.depositMoney(id, amount);
+        cardDAO.depositMoney(id, amount);
         Transaction transaction = new Transaction(id, "Deposit",
                 amount, ZonedDateTime.now());
         transactionDAO.save(transaction);
     }
 
     public void withdrawMoney(long id, BigDecimal amount){
-        userDAO.withdrawMoney(id, amount);
+        cardDAO.withdrawMoney(id, amount);
         Transaction transaction = new Transaction(id, "Withdraw",
                 amount, ZonedDateTime.now());
         transactionDAO.save(transaction);
@@ -110,14 +110,14 @@ public class ApplicationService {
         return cardDAO.findById(id);
     }
 
-    public long getUserIdByAccountAndPin(BigDecimal account, BigDecimal pincode) {
+    public long getUserIdByAccountAndPin(BigDecimal account, String pincode) {
         if (String.valueOf(account).length()<16 || String.valueOf(pincode).length()<4) {
             throw ZERO_OR_NEGATIVE;
         }
         return cardDAO.findUserId(account, pincode);
     }
 
-    public Card getCardByAccountAndPin(BigDecimal account, BigDecimal pincode) {
+    public Card getCardByAccountAndPin(BigDecimal account, String pincode) {
         if (String.valueOf(account).length()<16 || String.valueOf(pincode).length()<4) {
             return null;
         }

@@ -35,15 +35,14 @@
             <div class="u-form-group u-form-name">
                 <p style="color: red;">${errorMessage}</p>
               <label for="username-a30d" class="u-label">Card number *</label>
-              <input type="text" placeholder="Enter your Username" id="username-a30d" name="account" class="u-border-grey-30 u-input u-input-rectangle u-input-1" required="">
+              <input type="text" placeholder="Enter your card number" id="username-a30d" name="account" class="u-border-grey-30 u-input u-input-rectangle u-input-1" required="">
             </div>
             <div class="u-form-group u-form-password">
               <label for="password-a30d" class="u-label">PIN *</label>
               <input type="text" placeholder="Enter your Password" id="password-a30d" name="pincode" class="u-border-grey-30 u-input u-input-rectangle u-input-2" required="">
             </div>
              <div class="u-align-left u-form-group u-form-submit">
-              <a href="#" class="u-btn u-btn-submit u-button-style u-btn-1">Login</a>
-              <input type="submit" value="submit" class="u-form-control-hidden">
+              <input type="submit" value="Login" class="u-btn u-btn-round u-btn-submit u-button-style u-radius-20">
             </div>
             <input type="hidden" value="" name="recaptchaResponse">
           </form>

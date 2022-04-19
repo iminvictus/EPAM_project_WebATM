@@ -1,5 +1,6 @@
 package controllers;
 
+import dao.cards.CardDAO;
 import dao.transactions.TransactionDAO;
 import dao.users.UserDAO;
 import jakarta.servlet.RequestDispatcher;
@@ -34,6 +35,8 @@ public class DepositServletIT {
     @Mock
     private UserDAO userDAO;
     @Mock
+    private CardDAO cardDAO;
+    @Mock
     private TransactionDAO transactionDAO;
     @Mock
     private HttpServletRequest request;
@@ -47,14 +50,14 @@ public class DepositServletIT {
         when(request.getParameter("id")).thenReturn("1");
         when(request.getParameter("amount")).thenReturn("111");
         when(request.getRequestDispatcher(DEPOSIT_PATH)).thenReturn(dispatcher);
-        when(userDAO.findById(1L)).thenReturn(new User(1L, "Test1", "Test11", new BigDecimal(111)));
-        servlet = new DepositServlet(new ApplicationService(userDAO, transactionDAO));
+        when(userDAO.findById(1L)).thenReturn(new User(1L, "Test1", "Test11"));
+        servlet = new DepositServlet(new ApplicationService(userDAO, transactionDAO, cardDAO));
     }
 
     @Test
     public void doDepositTest() throws ServletException, IOException {
         ArgumentCaptor<Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
-        User testUser = new User(1L, "Test1", "Test11", new BigDecimal(111));
+        User testUser = new User(1L, "Test1", "Test11");
         servlet.doGet(request, response);
 
         verify(userDAO, times(1)).findById(1);
@@ -65,7 +68,7 @@ public class DepositServletIT {
 
         servlet.doPost(request, response);
 
-        verify(userDAO, times(1)).depositMoney(1, new BigDecimal(111));
+        verify(cardDAO, times(1)).depositMoney(1, new BigDecimal(111));
         verify(response, times(1)).sendRedirect(request.getContextPath() + "/service");
         Mockito.verify(transactionDAO).save(captor.capture());
         Assert.assertEquals(1L, captor.getValue().getUserid());
