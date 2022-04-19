@@ -124,6 +124,13 @@ public class ApplicationService {
         return cardDAO.findCardByAccAndPin(account, pincode);
     }
 
+    public Card getCardByAccount(BigDecimal account) {
+        if (String.valueOf(account).length()<16) {
+            return null;
+        }
+        return cardDAO.findByAccount(account);
+    }
+
     public void destroy() {
         userDAO.closeConnection();
         transactionDAO.closeConnection();
