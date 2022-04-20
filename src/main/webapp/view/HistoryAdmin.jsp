@@ -1,8 +1,7 @@
 <%@ page import="models.Transaction" %>
 <%@ page import="java.util.List" %>
-<%@ page import="services.ApplicationService" %>
-<%@ page import="java.util.Comparator" %>
-<%@ page import="java.util.stream.Collectors" %>
+<%@ page import="java.time.format.DateTimeFormatter"%>
+<%@ page import="java.time.format.FormatStyle"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
@@ -15,7 +14,7 @@
     <meta name="page_type" content="np-template-header-footer-from-plugin">
     <title>History</title>
     <link rel="stylesheet" href="/view/nicepage.css" media="screen">
-    <link rel="stylesheet" href="/view/History.css" media="screen">
+    <link rel="stylesheet" href="/view/Home.css" media="screen">
     <script class="u-script" type="text/javascript" src="/view/jquery.js" defer=""></script>
     <script class="u-script" type="text/javascript" src="/view/nicepage.js" defer=""></script>
     <meta name="generator" content="Nicepage 4.7.1, nicepage.com">
@@ -39,47 +38,35 @@
         <h2 class="u-align-center u-custom-font u-text u-text-default u-text-1">Uranus Bank</h2>
     </div>
 </header>
+
+<% List<Transaction> transactions = (List<Transaction>) request.getAttribute("transactions");%>
 <section class="u-clearfix u-image u-section-1" id="sec-28a1" data-image-width="2000" data-image-height="1000">
     <div class="u-align-left u-clearfix u-sheet u-sheet-1">
-        <h1 class="u-text u-text-1">History of the last 20 transactions</h1>
         <h5 class="u-align-left u-custom-font u-font-arial u-text u-text-2"><p class="u-text u-text-2"></p>
-            </form>
-            <table>
-                <tr>
-                    <th>TransactionID</th>
-                    <th>UserID</th>
-                    <th>Transaction type</th>
-                    <th>Transaction amount</th>
-                    <th>Time</th>
-                </tr>
-                <%
-                    ApplicationService applicationService = new ApplicationService();
-                    List<Transaction> transactionsList = applicationService.getAllTransactions();
-                    List<Transaction> last20List = transactionsList.stream()
-                            .sorted(Comparator.comparingLong(Transaction::getId).reversed())
-                            .collect(Collectors.toList());
-
-                    for (int i = 0; i < 20; i++) { %>
-                <tr>
-                    <td><%=last20List.get(i).getId()%>
-                    </td>
-                    <td><%=last20List.get(i).getUserid()%>
-                    </td>
-                    <td><%=last20List.get(i).getType()%>
-                    </td>
-                    <td><%=last20List.get(i).getAmount()%>
-                    </td>
-                    <td><%=last20List.get(i).getTime()%>
-                    </td>
-                </tr>
-                <%
-                    }
-                %>
-            </table>
+                <table>
+                    <tr>
+                        <th>TransactionID</th>
+                        <th>UserID</th>
+                        <th>Transaction type</th>
+                        <th>Transaction amount</th>
+                        <th>Time</th>
+                    </tr>
+                    <%  DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+                        for (Transaction t: transactions) {%>
+                    <tr>
+                        <td><%=t.getId()%></td>
+                        <td><%=t.getUserid()%></td>
+                        <td><%=t.getType()%></td>
+                        <td><%=t.getAmount()%></td>
+                        <td><%=t.getTime().format(formatter)%></td>
+                   <% } %>
+                </table>
 
             </form>
         </h5>
+        <a href="/" data-page-id="49464255" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-1">Home</a>
     </div>
 </section>
+
 </body>
 </html>

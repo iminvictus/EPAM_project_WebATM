@@ -257,3 +257,14 @@
     width: 340px;
   }
 }
+
+.button {
+    background-image: linear-gradient(#e9f2fa, #77aad9);
+    border-style: none;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 5px 5px 20px 0 rgba(0,0,0,0.4);
+    float: right;
+    margin-top: 8px;
+    padding: 10px 10px 10px 10px;
+}
