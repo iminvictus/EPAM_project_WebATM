@@ -47,7 +47,8 @@
         <a href="/view/Settings.jsp" data-page-id="54092570" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-4">Security</a>
         <a href="/" data-page-id="49464255" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-5">Payments</a>
         <a href="/history" data-page-id="836202084" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-6">Transactions</a>
-        <a href="/view/HistoryAdmin.jsp" data-page-id="54092571" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-7">Last 20 transactions</a>
+        <a href="/lastTransactions" data-page-id="54092571" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-7">Last 20 transactions</a>
+        <a href="/allTransactionsByUser" data-page-id="54092571" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-7">Last transactions by user</a>
         <p class="u-align-left u-text u-text-2">Transaction action result : _________________________________________</p>
         <a href="/logout" class="u-btn u-btn-round u-button-style u-hover-palette-1-light-1 u-palette-1-base u-radius-6 u-btn-8">Return card</a>
       </div>
