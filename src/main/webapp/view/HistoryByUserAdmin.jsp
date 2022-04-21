@@ -53,7 +53,7 @@
                             <input type="submit" value="Find">
                         </div>
                         <div>
-                            <a href="/" data-page-id="49464255" class="button">Home</a>
+                            <a href="/view/HomeAdmin.jsp" data-page-id="49464255" class="button">Home</a>
                         </div>
                     </form>
                     <% if (transactions != null) { %>

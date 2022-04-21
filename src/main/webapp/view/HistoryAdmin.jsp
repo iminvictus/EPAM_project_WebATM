@@ -64,7 +64,7 @@
 
             </form>
         </h5>
-        <a href="/" data-page-id="49464255" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-1">Home</a>
+        <a href="/view/HomeAdmin.jsp" data-page-id="49464255" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-1">Home</a>
     </div>
 </section>
 
