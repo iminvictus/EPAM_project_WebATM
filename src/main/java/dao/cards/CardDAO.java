@@ -13,7 +13,6 @@ import models.Card;
 import models.CardCurrency;
 import models.User;
 
-
 @Log4j
 public class CardDAO extends DataAccessObject<Card> {
     private static final String FIND_BY_ID = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE id_card = ?";
@@ -67,7 +66,6 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setExpiration(resultSet.getDate("expiration_date"));
                 card.setUserid(resultSet.getLong("id_user"));
                 card.setPincode(resultSet.getString("pincode"));
-
             }
             logger.info("findById method was invoked in CardDAO");
             return card.getAccount() != null ? card : null;
@@ -128,7 +126,7 @@ public class CardDAO extends DataAccessObject<Card> {
     }
 
     public Long findUserId(BigDecimal account, String pincode) {
-        Long userId = 0L;
+        long userId = 0L;
         try (PreparedStatement statement = this.connection.prepareStatement(FIND_USER_ID_BY_CARD_AND_PIN)) {
             statement.setBigDecimal(1, account);
             statement.setString(2, pincode);
@@ -136,7 +134,6 @@ public class CardDAO extends DataAccessObject<Card> {
             while (resultSet.next()) {
                 userId = resultSet.getLong("id_user");
             }
-
             logger.info("findUserId method was invoked in CardDAO");
         } catch (SQLException ex) {
             logger.error("sql exception", ex);
@@ -160,7 +157,6 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setExpiration(resultSet.getDate("expiration_date"));
                 card.setUserid(resultSet.getLong("id_user"));
                 card.setPincode(resultSet.getString("pincode"));
-
             }
             logger.info("findById method was invoked in CardDAO");
             return card.getId() != null ? card : null;
