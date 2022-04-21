@@ -36,10 +36,3 @@ INSERT INTO cards (id_card, account, balance, currency, expiration_date, pincode
 (8, 2202322513112254, 45000, 'RUR', date '2023-04-08', '5e9d17e41f784ae361ada1d0817186f6', 4), --7001
 (9, 4276322513112255, 50000, 'RUR', date '2023-05-08', '67ff32d40fb51f1a2fd2c4f1b1019785', 5), --8000
 (10, 2202322513112255, 55000, 'RUR', date '2023-05-08', 'bc3c4a6331a8a9950945a1aa8c95ab8a', 5); --8001
-
---for existing table 'users'
-update users set role = 'CLIENT' where id = 1;
-update users set role = 'CLIENT' where id = 2;
-update users set role = 'CLIENT' where id = 3;
-update users set role = 'CLIENT' where id = 4;
-update users set role = 'ADMIN' where id = 5;

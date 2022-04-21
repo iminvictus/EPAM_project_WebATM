@@ -1,0 +1,35 @@
+version: '3.9'
+
+networks:
+    ura_net:
+        driver: bridge
+
+services:
+    db:
+        image: postgres:14.2
+        restart: always
+        container_name: ura_db
+        environment:
+          - POSTGRES_USER=postgres
+          - POSTGRES_PASSWORD=admin
+          - POSTGRES_DB=atm_service
+        ports:
+          - '5432:5432'
+        networks:
+          - ura_net
+        volumes:
+          - ./postgres-data:/var/lib/postgresql/data
+          # copy the sql script to create tables
+          - ./src/main/resources/10-init-db.sql:/docker-entrypoint-initdb.d/10-init-db.sql
+          # copy the sql script to fill tables
+          - ./src/main/resources/20-fill-test-data.sql:/docker-entrypoint-initdb.d/20-fill-test-data.sql
+    
+    app:
+        image: tomcat:10.0.18
+        container_name: ura_app
+        volumes:
+          - ./target/ROOT.war:/usr/local/tomcat/webapps/ROOT.war
+        ports:
+          - '80:8080'
+        networks:
+          - ura_net

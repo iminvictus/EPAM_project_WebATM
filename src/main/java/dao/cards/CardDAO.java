@@ -69,7 +69,7 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setPincode(resultSet.getString("pincode"));
 
             }
-            logger.info("findById method was invoked in CardDAO");
+            logger.info("findByAccount method was invoked in CardDAO");
             return card.getAccount() != null ? card : null;
         } catch (SQLException ex) {
             logger.error("sql exception", ex);
@@ -162,7 +162,7 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setPincode(resultSet.getString("pincode"));
 
             }
-            logger.info("findById method was invoked in CardDAO");
+            logger.info("findCardByAccAndPin method was invoked in CardDAO");
             return card.getId() != null ? card : null;
         } catch (SQLException ex) {
             logger.error("sql exception", ex);
