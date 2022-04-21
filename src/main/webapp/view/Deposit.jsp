@@ -40,7 +40,10 @@
               <input type="number" min="1" max="1000000" required placeholder="Deposit amount" id="name-d860" name="amount" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white">
             </div>
               <div class="u-align-right u-form-group u-form-submit">
-                  <input type="submit" value="Deposit" class="u-btn u-btn-submit u-button-style">
+                  <input type="submit" value="Deposit" class="u-btn u-btn-submit u-button-style u-btn-width-default">
+                  <br>
+                  <br>
+                  <a href="/logout" class="u-btn u-btn-submit u-button-style u-btn-width-default">Return card</a>
               </div>
             <div class="u-form-send-message u-form-send-success"> Thank you! Your message has been sent. </div>
             <div class="u-form-send-error u-form-send-message"> Unable to send your message. Please fix errors then try again. </div>
