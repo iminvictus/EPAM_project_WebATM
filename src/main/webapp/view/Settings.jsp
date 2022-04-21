@@ -37,6 +37,8 @@
         </a>
         <a href="/" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-3">Block<br>card
         </a>
+        <a href="/logout" class="u-btn u-btn-submit u-button-style u-btn-width-default u-btn-float-default">Return card
+        </a>
       </div>
     </section>
   </body>

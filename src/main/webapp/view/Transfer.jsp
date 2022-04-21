@@ -47,7 +47,10 @@
               <input type="number" placeholder="Amount" id="email-58d5" name="amount" class="u-border-1 u-border-grey-30 u-input u-input-rectangle u-white" required="">
             </div>
             <div class="u-align-right u-form-group u-form-submit">
-              <input type="submit" value="Send" class="u-btn u-btn-submit u-button-style">
+              <input type="submit" value="Send" class="u-btn u-btn-submit u-button-style u-btn-width-default">
+              <br>
+              <br>
+              <a href="/logout" class="u-btn u-btn-submit u-button-style u-btn-width-default">Return card</a>
             </div>
             <div class="u-form-send-message u-form-send-success"> Thank you! Your message has been sent. </div>
             <div class="u-form-send-error u-form-send-message"> Unable to send your message. Please fix errors then try again. </div>

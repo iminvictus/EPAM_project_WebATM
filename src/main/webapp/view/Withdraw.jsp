@@ -45,7 +45,10 @@
               <% if (error_amount != null) { %> <p><%=error_amount%></p> <% } %>
             </div>
               <div class="u-align-right u-form-group u-form-submit">
-                  <input type="submit" value="Withdraw" class="u-btn u-btn-submit u-button-style">
+                  <input type="submit" value="Withdraw" class="u-btn u-btn-submit u-button-style u-btn-width-default">
+                  <br>
+                  <br>
+                  <a href="/logout" class="u-btn u-btn-submit u-button-style u-btn-width-default">Return card</a>
               </div>
             <div class="u-form-send-message u-form-send-success"> Thank you! Your message has been sent. </div>
             <div class="u-form-send-error u-form-send-message"> Unable to send your message. Please fix errors then try again. </div>

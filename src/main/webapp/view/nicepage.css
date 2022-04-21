@@ -1935,6 +1935,14 @@ a {
 .u-btn-submit {
   display: inline-block;
 }
+.u-btn-width-default {
+    width: 20%;
+    padding: 13px;
+}
+.u-btn-float-default {
+    float: right;
+    margin: 20px 234px 0 auto;
+}
 .u-label {
   font-weight: normal;
 }
