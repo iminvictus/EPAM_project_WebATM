@@ -52,19 +52,13 @@ public class TransferServlet extends HttpServlet {
         BigDecimal amount = new BigDecimal(req.getParameter("amount"));
 
         if (currentCard.getBalance().compareTo(amount) < 0) {
-
             req.setAttribute("error_amount", "Not enough money on the card");
             req.getRequestDispatcher("view/Transfer.jsp").forward(req, resp);
-
-        } else if (dest_account == null || dest_card == null) {
-
+        } else if (dest_card == null) {
             req.setAttribute("error_card", "The card does not exist");
             req.getRequestDispatcher("view/Transfer.jsp").forward(req, resp);
-
         } else {
-
-            applicationService.withdrawMoney(id, amount);
-            applicationService.depositMoney(dest_card.getId(), amount);
+            applicationService.transferMoney(id, dest_card.getId(), amount);
             resp.sendRedirect(req.getContextPath() + "/service");
         }
     }

@@ -4,6 +4,7 @@ import dao.cards.CardDAO;
 import dao.transactions.TransactionDAO;
 import dao.users.UserDAO;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 import models.Card;
 import models.Transaction;
@@ -11,6 +12,8 @@ import models.User;
 import utils.DatabaseConnectionManager;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -18,16 +21,19 @@ import java.util.List;
 @AllArgsConstructor
 public class ApplicationService {
     private final static IllegalArgumentException ZERO_OR_NEGATIVE = new IllegalArgumentException("value is zero or negative");
-
     private final UserDAO userDAO;
     private final TransactionDAO transactionDAO;
     private final CardDAO cardDAO;
+    private Connection connection;
 
+    @SneakyThrows
     public ApplicationService() {
         try {
-            userDAO = new UserDAO(DatabaseConnectionManager.getConnection());
-            transactionDAO = new TransactionDAO(DatabaseConnectionManager.getConnection());
-            cardDAO = new CardDAO(DatabaseConnectionManager.getConnection());
+            connection = DatabaseConnectionManager.getConnection();
+            connection.setAutoCommit(false);
+            userDAO = new UserDAO(connection);
+            transactionDAO = new TransactionDAO(connection);
+            cardDAO = new CardDAO(connection);
         } catch (RuntimeException ex) {
             logger.error("dao initialization error", ex);
             throw new RuntimeException(ex);
@@ -76,18 +82,66 @@ public class ApplicationService {
         return transactionDAO.findById(id);
     }
 
+    @SneakyThrows
     public void depositMoney(long id, BigDecimal amount) {
-        cardDAO.depositMoney(id, amount);
-        Transaction transaction = new Transaction(id, "Deposit",
-                amount, ZonedDateTime.now());
-        transactionDAO.save(transaction);
+        try {
+            cardDAO.depositMoney(id, amount);
+            Transaction transaction = new Transaction(id, "deposit",
+                    amount, ZonedDateTime.now());
+            transactionDAO.save(transaction);
+            connection.commit();
+            logger.info("Deposit money operation was done successfully");
+        } catch (SQLException | RuntimeException e) {
+            logger.error("SQL exception occurred", e);
+            connection.rollback();
+            Transaction transaction = new Transaction(id, "deposit/error",
+                    amount, ZonedDateTime.now());
+            transactionDAO.save(transaction);
+            connection.commit();
+        }
     }
+    @SneakyThrows
+    public void withdrawMoney(long id, BigDecimal amount) {
+        try {
+            cardDAO.withdrawMoney(id, amount);
+            Transaction transaction = new Transaction(id, "withdraw",
+                    amount, ZonedDateTime.now());
+            transactionDAO.save(transaction);
+            connection.commit();
+            logger.info("Withdraw money operation was done successfully");
+        } catch (SQLException | RuntimeException e) {
+            logger.error("SQL exception occurred", e);
+            connection.rollback();
+            Transaction transaction = new Transaction(id, "withdraw/error",
+                    amount, ZonedDateTime.now());
+            transactionDAO.save(transaction);
+            connection.commit();
+        }
+    }
+    @SneakyThrows
+    public void transferMoney(long idFrom, long idTo, BigDecimal amount) {
+        try {
+            cardDAO.withdrawMoney(idFrom, amount);
+            Transaction transaction = new Transaction(idFrom, "withdraw",
+                    amount, ZonedDateTime.now());
+            transactionDAO.save(transaction);
+            logger.info("Withdraw money operation in transfer method was done successfully");
 
-    public void withdrawMoney(long id, BigDecimal amount){
-        cardDAO.withdrawMoney(id, amount);
-        Transaction transaction = new Transaction(id, "Withdraw",
-                amount, ZonedDateTime.now());
-        transactionDAO.save(transaction);
+            cardDAO.depositMoney(idTo, amount);
+            transaction = new Transaction(idTo, "deposit",
+                    amount, ZonedDateTime.now());
+            transactionDAO.save(transaction);
+            logger.info("Deposit money operation in transfer method was done successfully");
+            connection.commit();
+            logger.info("Transfer money operation was done successfully");
+        } catch (SQLException | RuntimeException e) {
+            logger.error("SQL exception occurred", e);
+            connection.rollback();
+            Transaction transaction = new Transaction(idFrom, "withdraw/error",
+                    amount, ZonedDateTime.now());
+            transactionDAO.save(transaction);
+            connection.commit();
+        }
     }
 
     public List<Card> getAllCards() {
