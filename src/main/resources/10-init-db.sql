@@ -27,6 +27,3 @@ CREATE TABLE cards
     id_user INTEGER NOT NULL,
     FOREIGN KEY (id_user) references users (id)
 );
-
-
-
