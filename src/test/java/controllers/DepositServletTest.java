@@ -4,6 +4,7 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import models.Role;
 import models.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +38,7 @@ public class DepositServletTest {
     @Test
     public void doGetDepositTest() throws ServletException, IOException {
         //given
-        User user = new User(1L, "Test1", "Test11");
+        User user = new User(1L, "Test1", "Test11", "79998887755", "adf@mail.ru", "qwerty1234", "secret", Role.CLIENT);
         String path = "view/Deposit.jsp";
 
         when(request.getParameter("id")).thenReturn("1");
@@ -58,12 +59,13 @@ public class DepositServletTest {
         when(request.getParameter("id")).thenReturn("1");
         when(request.getParameter("amount")).thenReturn("111");
         when(request.getContextPath()).thenReturn("test");
+        when(service.getUserById(1)).thenReturn(new User(1L, "Test1", "Test11", "79998887755", "adf@mail.ru", "qwerty1234", "secret", Role.CLIENT));
         //when
         servlet.doPost(request, response);
         //then
         verify(request, atLeast(1)).getParameter("id");
         verify(request, atLeast(1)).getParameter("amount");
-        verify(service, atLeast(1)).depositMoney(1, new BigDecimal(111));
+        verify(service, atLeast(1)).depositMoney(1, new BigDecimal(111), "CLIENT");
         verify(response, atLeast(1)).sendRedirect("test/service");
     }
 }

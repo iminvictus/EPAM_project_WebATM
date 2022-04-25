@@ -49,12 +49,12 @@ public class WithdrawServlet extends HttpServlet {
         Card card = (Card) req.getSession().getAttribute("approvedCard");
         BigDecimal amount = new BigDecimal(req.getParameter("amount"));
         if (card.getBalance().compareTo(amount) < 0) {
-
             req.setAttribute("error_amount", "Not enough money on the card");
             req.getRequestDispatcher("view/Withdraw.jsp").forward(req, resp);
         } else {
             BigDecimal amountOfWithdraw = new BigDecimal(req.getParameter("amount"));
-            applicationService.withdrawMoney(id, amountOfWithdraw);
+            String initiator = applicationService.getUserById(id).getRole().toString();
+            applicationService.withdrawMoney(id, amountOfWithdraw, initiator);
             resp.sendRedirect(req.getContextPath() + "/service");
         }
     }

@@ -51,7 +51,7 @@ public class CardDAOTest {
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
 
         expectedCardList = new ArrayList<>();
-        expectedCardList.add(new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L, CardStatus.OPEN));
+        expectedCardList.add(new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", CardStatus.OPEN, 1L));
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getLong("id_card")).thenReturn(1L);
         when(resultSet.getBigDecimal("account")).thenReturn(new BigDecimal("1234567890123456"));
@@ -59,6 +59,7 @@ public class CardDAOTest {
         when((resultSet.getString("currency"))).thenReturn(String.valueOf(CardCurrency.RUR));
         when(resultSet.getDate("expiration_date")).thenReturn(new Date(12345));
         when(resultSet.getString("pincode")).thenReturn("4000");
+        when(resultSet.getString("status")).thenReturn("open");
         when(resultSet.getLong("id_user")).thenReturn(1L);
     }
 
@@ -66,9 +67,9 @@ public class CardDAOTest {
     @Test
     public void findById_givenId_thenGetCard() {
         // given
-        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE id_card = ?")).thenReturn(preparedStatement);
+        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, status, id_user FROM cards WHERE id_card = ?")).thenReturn(preparedStatement);
 
-        Card expected = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L, CardStatus.OPEN);
+        Card expected = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", CardStatus.OPEN, 1L);
         // when
         final Card actual = cardDAO.findById(1L);
         // then
@@ -80,7 +81,7 @@ public class CardDAOTest {
     @Test
     public void findById_givenNoCardFound_thenGetNull() throws SQLException {
         //given
-        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE id_card = ?")).thenReturn(preparedStatement);
+        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, status, id_user FROM cards WHERE id_card = ?")).thenReturn(preparedStatement);
         when(resultSet.next()).thenReturn(false);
         //when
         final Card actual = cardDAO.findById(2);
@@ -102,7 +103,7 @@ public class CardDAOTest {
     @Test
     public void findAll_givenCards_thenGetAllCards() {
         // given
-        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards")).thenReturn(preparedStatement);
+        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, status, id_user FROM cards")).thenReturn(preparedStatement);
         //when
         final List<Card> actualList = cardDAO.findAll();
         // then
@@ -114,7 +115,7 @@ public class CardDAOTest {
     @Test
     public void findAll_NoCardsFound_thenReturnNull() throws SQLException {
         // given
-        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards")).thenReturn(preparedStatement);
+        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, status, id_user FROM cards")).thenReturn(preparedStatement);
         when(resultSet.next()).thenReturn(false);
         //when
         final List<Card> actual = cardDAO.findAll();
@@ -135,7 +136,7 @@ public class CardDAOTest {
     @Test
     public void findByUserId_givenUserId_thenGetCards() {
         // given
-        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE id_user = ?")).thenReturn(preparedStatement);
+        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, status, id_user FROM cards WHERE id_user = ?")).thenReturn(preparedStatement);
         //when
         final List<Card> actualList = cardDAO.findByUserId(1L);
         // then
@@ -167,9 +168,9 @@ public class CardDAOTest {
     @Test
     public void findCardByAccAndPin_givenAccountAndPin_thenGetCard() {
         //given
-        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE account = ? AND pincode = ?")).thenReturn(preparedStatement);
+        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, status, id_user FROM cards WHERE account = ? AND pincode = ?")).thenReturn(preparedStatement);
 
-        Card expected = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L, CardStatus.OPEN);
+        Card expected = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", CardStatus.OPEN, 1L);
         //when
         final Card actual = cardDAO.findCardByAccAndPin(new BigDecimal("1234567890123456"), "4000");
         // then
@@ -191,7 +192,7 @@ public class CardDAOTest {
     @Test
     public void withdrawMoney_givenAmount_changedAccountAmount() {
         //given
-        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE id_card = ?")).thenReturn(preparedStatement);
+        when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, status, id_user FROM cards WHERE id_card = ?")).thenReturn(preparedStatement);
         when(connection.prepareStatement("UPDATE cards SET balance = ? WHERE id_card = ?")).thenReturn(preparedStatement);
         // when
         cardDAO.withdrawMoney(1L, new BigDecimal(5));

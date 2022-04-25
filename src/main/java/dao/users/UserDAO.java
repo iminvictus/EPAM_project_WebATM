@@ -16,9 +16,8 @@ import java.util.List;
 
 @Log4j
 public class UserDAO extends DataAccessObject<User> {
-    private static final String FIND_BY_ID = "SELECT id, name, surname, role FROM users WHERE id = ?";
-    private static final String FIND_ALL = "SELECT id, name, surname, role FROM users";
-
+    private static final String FIND_BY_ID = "SELECT id_user, name, surname, phone, email, password, secret_word, role FROM users WHERE id_user = ?";
+    private static final String FIND_ALL = "SELECT id_user, name, surname, phone, email, password, secret_word, role FROM users";
 
     public UserDAO(Connection connection) {
         super(connection);
@@ -31,9 +30,13 @@ public class UserDAO extends DataAccessObject<User> {
             ResultSet resultSet = statement.executeQuery();
             User user = new User();
             while(resultSet.next()) {
-                user.setId(resultSet.getLong("id"));
+                user.setId(resultSet.getLong("id_user"));
                 user.setName(resultSet.getString("name"));
                 user.setSurname(resultSet.getString("surname"));
+                user.setPhone(resultSet.getString("phone"));
+                user.setEmail(resultSet.getString("email"));
+                user.setPassword(resultSet.getString("password"));
+                user.setSecret_word(resultSet.getString("secret_word"));
                 user.setRole(Role.valueOf(resultSet.getString("role")));
             }
             logger.info("findById method was invoked in UserDAO");
@@ -51,9 +54,13 @@ public class UserDAO extends DataAccessObject<User> {
             List<User> userList = new ArrayList<>();
             while (resultSet.next()) {
                 User user = new User();
-                user.setId(resultSet.getLong("id"));
+                user.setId(resultSet.getLong("id_user"));
                 user.setName(resultSet.getString("name"));
                 user.setSurname(resultSet.getString("surname"));
+                user.setPhone(resultSet.getString("phone"));
+                user.setEmail(resultSet.getString("email"));
+                user.setPassword(resultSet.getString("password"));
+                user.setSecret_word(resultSet.getString("secret_word"));
                 user.setRole(Role.valueOf(resultSet.getString("role")));
                 userList.add(user);
             }

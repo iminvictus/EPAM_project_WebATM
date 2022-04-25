@@ -14,18 +14,20 @@ public class User implements DataTransferObject {
     private long id;
     private String name;
     private String surname;
+    private String phone;
+    private String email;
+    private String password;
+    private String secret_word;
     private Role role;
 
     public User(String name, String surname) {
         this.name = name;
         this.surname = surname;
-
     }
 
     public User(Long id, String name, String surname) {
         this.id = id;
         this.name = name;
         this.surname = surname;
-
     }
 }

@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
 import models.Card;
 import models.CardCurrency;
+import models.Role;
 import models.CardStatus;
 import models.User;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import services.ApplicationService;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,7 +64,7 @@ public class WithdrawServletTest {
     @Test
     public void doPostWithdrawTest() throws IOException, ServletException {
         //given
-        Card card = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L, CardStatus.OPEN);
+        Card card = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", CardStatus.OPEN, 1L);
         BigDecimal amount = card.getBalance().divide(new BigDecimal(10));
         when(request.getParameter("id")).thenReturn("1");
         when(request.getParameter("amount")).thenReturn("10");
@@ -70,13 +72,14 @@ public class WithdrawServletTest {
         when(request.getSession()).thenReturn(session);
         when(request.getParameter("amount")).thenReturn(String.valueOf(amount));
         when(session.getAttribute("approvedCard")).thenReturn(card);
+        when(service.getUserById(any(Long.class))).thenReturn(new User(1L, "Test1", "Test11", "79998887755", "adf@mail.ru", "qwerty1234", "secret", Role.CLIENT));
 
         //when
         servlet.doPost(request, response);
         //then
         verify(request, atLeast(1)).getParameter("id");
         verify(request, atLeast(1)).getParameter("amount");
-        verify(service, atLeast(1)).withdrawMoney(1, amount);
+        verify(service, atLeast(1)).withdrawMoney(1, amount, "CLIENT");
         verify(response, atLeast(1)).sendRedirect("test/service");
     }
 }

@@ -15,12 +15,12 @@ import models.CardStatus;
 
 @Log4j
 public class CardDAO extends DataAccessObject<Card> {
-    private static final String FIND_BY_ID = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE id_card = ?";
-    private static final String FIND_BY_ACCOUNT = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE account = ?";
-    private static final String FIND_BY_USER_ID = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE id_user = ?";
-    private static final String FIND_ALL = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards";
+    private static final String FIND_BY_ID = "SELECT id_card, account, balance, currency, expiration_date, pincode, status, id_user FROM cards WHERE id_card = ?";
+    private static final String FIND_BY_ACCOUNT = "SELECT id_card, account, balance, currency, expiration_date, pincode, status, id_user FROM cards WHERE account = ?";
+    private static final String FIND_BY_USER_ID = "SELECT id_card, account, balance, currency, expiration_date, pincode, status, id_user FROM cards WHERE id_user = ?";
+    private static final String FIND_ALL = "SELECT id_card, account, balance, currency, expiration_date, pincode, status, id_user FROM cards";
     private static final String FIND_USER_ID_BY_CARD_AND_PIN = "SELECT id_user FROM cards WHERE account = ? AND pincode = ?";
-    private static final String FIND_CARD_BY_ACC_AND_PIN = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user, status FROM cards WHERE account = ? AND pincode = ?";
+    private static final String FIND_CARD_BY_ACC_AND_PIN = "SELECT id_card, account, balance, currency, expiration_date, pincode, status, id_user FROM cards WHERE account = ? AND pincode = ?";
     private static final String UPDATE_BALANCE = "UPDATE cards SET balance = ? WHERE id_card = ?";
     private static final String CHANGE_CARD_STATUS = "UPDATE cards SET status = ? WHERE account = ?";
 
@@ -40,10 +40,10 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
                 card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
-                card.setExpiration(resultSet.getDate("expiration_date"));
-                card.setUserid(resultSet.getLong("id_user"));
+                card.setExpiration_date(resultSet.getDate("expiration_date"));
                 card.setPincode(resultSet.getString("pincode"));
-
+                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status")));
+                card.setId_user(resultSet.getLong("id_user"));
             }
             logger.info("findById method was invoked in CardDAO");
             return card.getId() != null ? card : null;
@@ -64,9 +64,10 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
                 card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
-                card.setExpiration(resultSet.getDate("expiration_date"));
-                card.setUserid(resultSet.getLong("id_user"));
+                card.setExpiration_date(resultSet.getDate("expiration_date"));
                 card.setPincode(resultSet.getString("pincode"));
+                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status")));
+                card.setId_user(resultSet.getLong("id_user"));
             }
             logger.info("findByAccount method was invoked in CardDAO");
             return card.getAccount() != null ? card : null;
@@ -88,9 +89,10 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
                 card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
-                card.setExpiration(resultSet.getDate("expiration_date"));
+                card.setExpiration_date(resultSet.getDate("expiration_date"));
                 card.setPincode(resultSet.getString("pincode"));
-                card.setUserid(resultSet.getLong("id_user"));
+                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status")));
+                card.setId_user(resultSet.getLong("id_user"));
                 cardsList.add(card);
             }
             logger.info("findAll method was invoked in CardDAO");
@@ -112,13 +114,14 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
                 card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
-                card.setExpiration(resultSet.getDate("expiration_date"));
+                card.setExpiration_date(resultSet.getDate("expiration_date"));
                 card.setPincode(resultSet.getString("pincode"));
-                card.setUserid(resultSet.getLong("id_user"));
-                if (card.getUserid() == id)
+                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status")));
+                card.setId_user(resultSet.getLong("id_user"));
+                if (card.getId_user() == id)
                     cardsListId.add(card);
             }
-            logger.info("findByUserId method was invoked in CardDAO");
+            logger.info("findByCardId method was invoked in CardDAO");
             return cardsListId.size() != 0 ? cardsListId : null;
         } catch (SQLException ex) {
             logger.error("sql exception", ex);
@@ -127,7 +130,7 @@ public class CardDAO extends DataAccessObject<Card> {
     }
 
     public Long findUserId(BigDecimal account, String pincode) {
-        long userId = 0L;
+        Long userId = 0L;
         try (PreparedStatement statement = this.connection.prepareStatement(FIND_USER_ID_BY_CARD_AND_PIN)) {
             statement.setBigDecimal(1, account);
             statement.setString(2, pincode);
@@ -167,10 +170,10 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
                 card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
-                card.setExpiration(resultSet.getDate("expiration_date"));
-                card.setUserid(resultSet.getLong("id_user"));
+                card.setExpiration_date(resultSet.getDate("expiration_date"));
                 card.setPincode(resultSet.getString("pincode"));
                 card.setCardStatus(CardStatus.valueOf(resultSet.getString("status")));
+                card.setId_user(resultSet.getLong("id_user"));
             }
             logger.info("findCardByAccAndPin method was invoked in CardDAO");
             return card.getId() != null ? card : null;

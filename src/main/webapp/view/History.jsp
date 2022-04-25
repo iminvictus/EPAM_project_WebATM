@@ -38,19 +38,23 @@
         <h5 class="u-align-left u-custom-font u-font-arial u-text u-text-2"><p class="u-text u-text-2"></p>
             <table>
                 <tr>
-                    <th>UserID</th>
-                    <th>Transaction type</th>
+                    <th>Date</th>
                     <th>Transaction amount</th>
-                    <th>Time</th>
+                    <th>Transaction type</th>
+                    <th>Initiated by</th>
+                    <th>State</th>
+                    <th>Card ID</th>
                 </tr>
                 <%
                     List<Transaction> transactionsList = (List) request.getAttribute("histList");
                     for (Transaction transaction : transactionsList) {    %>
                 <tr>
-                    <td><%=transaction.getUserid()%></td>
-                    <td><%=transaction.getType()%></td>
+                    <td><%=transaction.getDate()%></td>
                     <td><%=transaction.getAmount()%></td>
-                    <td><%=transaction.getTime()%></td>
+                    <td><%=transaction.getType()%></td>
+                    <td><%=transaction.getInitiated_by()%></td>
+                    <td><%=transaction.getState()%></td>
+                    <td><%=transaction.getId_card()%></td>
                 </tr>
                 <%
                     }

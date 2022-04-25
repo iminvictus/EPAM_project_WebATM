@@ -42,17 +42,17 @@ public class HistoryServletTest {
     @Before
     public void initTest() {
         histList = new ArrayList<>();
-        Transaction transaction1 = new Transaction(1, "Deposit", new BigDecimal(1000), ZonedDateTime.now());
-        Transaction transaction2 = new Transaction(2, "Withdraw", new BigDecimal(2000), ZonedDateTime.now());
-        Transaction transaction3 = new Transaction(1, "Deposit", new BigDecimal(500), ZonedDateTime.now());
-        Transaction transaction4 = new Transaction(2, "Withdraw", new BigDecimal(100), ZonedDateTime.now());
+        Transaction transaction1 = new Transaction(1, ZonedDateTime.now(), new BigDecimal(1000), "Deposit", "CLIENT", "Done", 1);
+        Transaction transaction2 = new Transaction(2, ZonedDateTime.now(), new BigDecimal(1000), "Deposit", "CLIENT", "Done", 2);
+        Transaction transaction3 = new Transaction(3, ZonedDateTime.now(), new BigDecimal(500), "Withdraw", "CLIENT", "Done", 1);
+        Transaction transaction4 = new Transaction(4, ZonedDateTime.now(), new BigDecimal(500), "Withdraw", "CLIENT", "Done", 2);
         histList.add(transaction1);
         histList.add(transaction2);
         histList.add(transaction3);
         histList.add(transaction4);
         histListId = new ArrayList<>();
         for (Transaction tr : histList) {
-            if (tr.getUserid() == 1) histListId.add(tr);
+            if (tr.getId_card() == 1) histListId.add(tr);
         }
     }
 
@@ -60,7 +60,7 @@ public class HistoryServletTest {
     public void doHistoryTest() throws ServletException, IOException {
         //given
         when(applicationService.getAllTransactions()).thenReturn(histList);
-        when(applicationService.getTransactionsByUserId(1)).thenReturn(histListId);
+        when(applicationService.getTransactionsByCardId(1)).thenReturn(histListId);
         when(request.getAttribute("histList")).thenReturn(histList);
         when(request.getAttribute("histListId")).thenReturn(histListId);
         when(request.getRequestDispatcher(path)).thenReturn(dispatcher);

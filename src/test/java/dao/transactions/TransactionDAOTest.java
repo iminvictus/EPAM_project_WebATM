@@ -45,20 +45,19 @@ public class TransactionDAOTest {
     @Before
     public void init() throws SQLException {
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
-        when(preparedStatement.executeQuery("SELECT id, userid, type, amount, time FROM transactions"))
+        when(preparedStatement.executeQuery("SELECT id_transaction, date, amount, type, initiated_by, state, id_card FROM transactions"))
                 .thenReturn(resultSet);
-        when(connection.prepareStatement("SELECT id, userid, type, amount, time FROM transactions WHERE id = ?"))
+        when(connection.prepareStatement("SELECT id_transaction, date, amount, type, initiated_by, state, id_card FROM transactions WHERE id_transaction = ?"))
                 .thenReturn(preparedStatement);
-        when(connection.prepareStatement("SELECT id, userid, type, amount, time FROM transactions WHERE userid = ?"))
+        when(connection.prepareStatement("SELECT id_transaction, date, amount, type, initiated_by, state, id_card FROM transactions WHERE id_card = ?"))
                 .thenReturn(preparedStatement);
-        when(connection.prepareStatement("INSERT INTO transactions (userid, type, amount, time) VALUES (?, ?, ?, ?)"))
+        when(connection.prepareStatement("INSERT INTO transactions (date, amount, type, initiated_by, state, id_card) VALUES (?, ?, ?, ?, ?, ?)"))
                 .thenReturn(preparedStatement);
         when(connection.createStatement()).thenReturn(preparedStatement);
 
         expectedList = new ArrayList<>();
         timestamp = new Timestamp(12345);
-        expected = new Transaction(1L, "deposit", new BigDecimal(111),
-                ZonedDateTime.of(timestamp.toLocalDateTime(), ZoneId.systemDefault()));
+        expected = new Transaction(1, ZonedDateTime.of(timestamp.toLocalDateTime(), ZoneId.systemDefault()), new BigDecimal(111), "deposit", "CLIENT", "Done", 1L);
         expected.setId(1L);
         expectedList.add(expected);
     }
@@ -66,11 +65,13 @@ public class TransactionDAOTest {
     @Test
     public void findById_givenTransactionFound_thenReturnTransaction() throws SQLException {
         when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getLong("id")).thenReturn(1L);
-        when(resultSet.getLong("userid")).thenReturn(1L);
-        when(resultSet.getString("type")).thenReturn("deposit");
+        when(resultSet.getLong("id_transaction")).thenReturn(1L);
+        when(resultSet.getTimestamp("date")).thenReturn(timestamp);
         when(resultSet.getBigDecimal("amount")).thenReturn(new BigDecimal(111));
-        when(resultSet.getTimestamp("time")).thenReturn(timestamp);
+        when(resultSet.getString("type")).thenReturn("deposit");
+        when(resultSet.getString("initiated_by")).thenReturn("CLIENT");
+        when(resultSet.getString("state")).thenReturn("Done");
+        when(resultSet.getLong("id_card")).thenReturn(1L);
 
         final Transaction actual = dao.findById(1);
 
@@ -102,13 +103,15 @@ public class TransactionDAOTest {
     @Test
     public void findByUserId_givenUserFound_thenReturnTransaction() throws SQLException {
         when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getLong("id")).thenReturn(1L);
-        when(resultSet.getLong("userid")).thenReturn(1L);
-        when(resultSet.getString("type")).thenReturn("deposit");
+        when(resultSet.getLong("id_transaction")).thenReturn(1L);
+        when(resultSet.getTimestamp("date")).thenReturn(timestamp);
         when(resultSet.getBigDecimal("amount")).thenReturn(new BigDecimal(111));
-        when(resultSet.getTimestamp("time")).thenReturn(timestamp);
+        when(resultSet.getString("type")).thenReturn("deposit");
+        when(resultSet.getString("initiated_by")).thenReturn("CLIENT");
+        when(resultSet.getString("state")).thenReturn("Done");
+        when(resultSet.getLong("id_card")).thenReturn(1L);
 
-        final List<Transaction> actual = dao.findByUserId(1);
+        final List<Transaction> actual = dao.findByCardId(1);
 
         verify(preparedStatement, times(1)).setLong(1, 1L);
         verify(preparedStatement, times(1)).executeQuery();
@@ -134,22 +137,24 @@ public class TransactionDAOTest {
         when(resultSet.getLong("id")).thenThrow(ex);
 
         Assert.assertThrows(RuntimeException.class,
-                () -> dao.findByUserId(1));
+                () -> dao.findByCardId(1));
     }
 
     @Test
     public void findAll_AllTransactionsFound() throws SQLException {
         when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getLong("id")).thenReturn(1L);
-        when(resultSet.getLong("userid")).thenReturn(1L);
-        when(resultSet.getString("type")).thenReturn("deposit");
+        when(resultSet.getLong("id_transaction")).thenReturn(1L);
+        when(resultSet.getTimestamp("date")).thenReturn(timestamp);
         when(resultSet.getBigDecimal("amount")).thenReturn(new BigDecimal(111));
-        when(resultSet.getTimestamp("time")).thenReturn(timestamp);
+        when(resultSet.getString("type")).thenReturn("deposit");
+        when(resultSet.getString("initiated_by")).thenReturn("CLIENT");
+        when(resultSet.getString("state")).thenReturn("Done");
+        when(resultSet.getLong("id_card")).thenReturn(1L);
 
         final List<Transaction> actual = dao.findAll();
 
         verify(preparedStatement, atLeast(1))
-                .executeQuery("SELECT id, userid, type, amount, time FROM transactions");
+                .executeQuery("SELECT id_transaction, date, amount, type, initiated_by, state, id_card FROM transactions");
         Assert.assertNotNull(actual);
         Assert.assertEquals(expectedList.get(0), actual.get(0));
     }
@@ -161,7 +166,7 @@ public class TransactionDAOTest {
         final List<Transaction> actual = dao.findAll();
 
         verify(preparedStatement, atLeast(1))
-                .executeQuery("SELECT id, userid, type, amount, time FROM transactions");
+                .executeQuery("SELECT id_transaction, date, amount, type, initiated_by, state, id_card FROM transactions");
         Assert.assertNull(actual);
     }
 
@@ -178,19 +183,21 @@ public class TransactionDAOTest {
     public void save_TransactionSaved() throws SQLException {
         dao.save(expected);
 
-        verify(preparedStatement, times(1)).setLong(1, 1L);
-        verify(preparedStatement, times(1)).setString(2, "deposit");
-        verify(preparedStatement, times(1)).setBigDecimal(3, new BigDecimal(111));
         verify(preparedStatement, times(1))
-                .setTimestamp(4, Timestamp.valueOf(ZonedDateTime.of(timestamp.toLocalDateTime(),
+                .setTimestamp(1, Timestamp.valueOf(ZonedDateTime.of(timestamp.toLocalDateTime(),
                         ZoneId.systemDefault()).toLocalDateTime()));
+        verify(preparedStatement, times(1)).setBigDecimal(2, new BigDecimal(111));
+        verify(preparedStatement, times(1)).setString(3, "deposit");
+        verify(preparedStatement, times(1)).setString(4, "CLIENT");
+        verify(preparedStatement, times(1)).setString(5, "Done");
+        verify(preparedStatement, times(1)).setLong(6, 1L);
         verify(preparedStatement, times(1)).execute();
     }
 
     @Test
     public void save_givenSqlException_thenLogAndRethrowRuntimeException() throws SQLException {
         SQLException ex = new SQLException();
-        Mockito.doThrow(ex).when(preparedStatement).setString(2, "deposit");
+        Mockito.doThrow(ex).when(preparedStatement).setString(3, "deposit");
 
         Assert.assertThrows(RuntimeException.class,
                 () -> dao.save(expected));
