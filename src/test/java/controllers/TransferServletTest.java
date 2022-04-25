@@ -5,10 +5,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.sql.Date;
+
+import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
 import models.Card;
 import models.CardCurrency;
 import models.CardStatus;
+import models.Role;
 import models.User;
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,6 +41,8 @@ public class TransferServletTest {
     @Mock
     private HttpServletResponse response;
     @Mock
+    private HttpSession session;
+    @Mock
     private RequestDispatcher dispatcher;
 
     @InjectMocks
@@ -46,8 +51,8 @@ public class TransferServletTest {
     @Before
     public void init() {
         user = new User(1L, "Ivan", "Ivanov");
-        cardCurrent = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L, CardStatus.OPEN);
-        cardDest = new Card(2L, new BigDecimal("1234567890123457"), new BigDecimal(10000), CardCurrency.RUR, new Date(123666), "4001", 2L, CardStatus.OPEN);
+        cardCurrent = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", CardStatus.OPEN, 1L);
+        cardDest = new Card(2L, new BigDecimal("1234567890123457"), new BigDecimal(10000), CardCurrency.RUR, new Date(123666), "4001", CardStatus.OPEN, 2L);
         when(request.getParameter("id")).thenReturn(String.valueOf(1));
         when(request.getParameter("amount")).thenReturn(String.valueOf(cardCurrent.getBalance().divide(new BigDecimal(10))));
         when(request.getParameter("dest_account")).thenReturn(String.valueOf(cardDest.getAccount()));
@@ -83,12 +88,14 @@ public class TransferServletTest {
         //given
         when(request.getParameter("dest_account")).thenReturn(String.valueOf(cardDest.getAccount()));
         when(applicationService.getCardByAccount(cardDest.getAccount())).thenReturn(cardDest);
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("role")).thenReturn(Role.CLIENT);
         //when
         servlet.doPost(request, response);
         //then
         verify(response, times(1)).sendRedirect(request.getContextPath() + "/service");
-        verify(applicationService, times(1)).withdrawMoney(cardCurrent.getId(), cardCurrent.getBalance().divide(new BigDecimal(10)));
-        verify(applicationService, times(1)).depositMoney(cardDest.getId(), cardCurrent.getBalance().divide(new BigDecimal(10)));
+        verify(applicationService, times(1)).withdrawMoney(cardCurrent.getId(), cardCurrent.getBalance().divide(new BigDecimal(10)), "CLIENT");
+        verify(applicationService, times(1)).depositMoney(cardDest.getId(), cardCurrent.getBalance().divide(new BigDecimal(10)), "CLIENT");
     }
 
     @SneakyThrows

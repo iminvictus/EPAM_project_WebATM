@@ -58,7 +58,8 @@ public class TransferServlet extends HttpServlet {
             req.setAttribute("error_card", "The card does not exist");
             req.getRequestDispatcher("view/Transfer.jsp").forward(req, resp);
         } else {
-            applicationService.transferMoney(id, dest_card.getId(), amount);
+            String initiator = req.getSession().getAttribute("role").toString();
+            applicationService.transferMoney(id, dest_card.getId(), amount, initiator);
             resp.sendRedirect(req.getContextPath() + "/service");
         }
     }

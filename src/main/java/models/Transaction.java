@@ -13,16 +13,20 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 public class Transaction implements DataTransferObject {
     private long id;
-    private long userid;
-    private String type;
+    private ZonedDateTime date;
     private BigDecimal amount;
-    private ZonedDateTime time;
+    private String type;
+    private String initiated_by;
+    private String state;
+    private long id_card;
 
-    public Transaction(long userid, String type, BigDecimal amount, ZonedDateTime time) {
-        this.userid = userid;
-        this.type = type;
+    public Transaction(ZonedDateTime date, BigDecimal amount, String type, String initiated_by, String state, long id_card) {
+        this.date = date;
         this.amount = amount;
-        this.time = time;
+        this.type = type;
+        this.initiated_by = initiated_by;
+        this.state = state;
+        this.id_card = id_card;
     }
 }
 

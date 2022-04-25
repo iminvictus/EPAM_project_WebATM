@@ -4,6 +4,7 @@ import dao.cards.CardDAO;
 import dao.transactions.TransactionDAO;
 import dao.users.UserDAO;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.sql.Date;
@@ -33,26 +34,23 @@ public class ApplicationServiceTest {
     private TransactionDAO transactionDAO;
     private CardDAO cardDAO;
     private ApplicationService applicationService;
+    private Connection connection;
 
     @BeforeClass
     public static void createTestLists() {
         //transactions' lists
         histList = new ArrayList<>();
-        Transaction transaction1 = new Transaction(1, "Deposit", new BigDecimal(1000), ZonedDateTime.now());
-        transaction1.setId(1);
-        Transaction transaction2 = new Transaction(2, "Withdraw", new BigDecimal(2000), ZonedDateTime.now());
-        transaction2.setId(2);
-        Transaction transaction3 = new Transaction(1, "Deposit", new BigDecimal(500), ZonedDateTime.now());
-        transaction3.setId(3);
-        Transaction transaction4 = new Transaction(2, "Withdraw", new BigDecimal(100), ZonedDateTime.now());
-        transaction4.setId(4);
+        Transaction transaction1 = new Transaction(1, ZonedDateTime.now(), new BigDecimal(1000), "Deposit", "CLIENT", "Done", 1L);
+        Transaction transaction2 = new Transaction(2, ZonedDateTime.now(), new BigDecimal(2000), "Withdraw", "CLIENT", "Done", 2L);
+        Transaction transaction3 = new Transaction(3, ZonedDateTime.now(), new BigDecimal(500), "Deposit", "CLIENT", "Done", 1L);
+        Transaction transaction4 = new Transaction(4, ZonedDateTime.now(), new BigDecimal(100), "Withdraw", "CLIENT", "Done", 2L);
         histList.add(transaction1);
         histList.add(transaction2);
         histList.add(transaction3);
         histList.add(transaction4);
         histListId = new ArrayList<>();
         for (Transaction tr : histList) {
-            if (tr.getUserid() == 1) histListId.add(tr);
+            if (tr.getId_card() == 1) histListId.add(tr);
         }
         //users' list
         usersList = new ArrayList<>();
@@ -68,9 +66,9 @@ public class ApplicationServiceTest {
 
         //cards' list
         cardsList = new ArrayList<>();
-        Card card1 = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(11111), "4000", 1L, CardStatus.OPEN);
-        Card card2 = new Card(2L, new BigDecimal("1234567890123457"), new BigDecimal(15000), CardCurrency.RUR, new Date(11111), "4000", 2L, CardStatus.OPEN);
-        Card card3 = new Card(3L, new BigDecimal("1234567890123458"), new BigDecimal(20000), CardCurrency.RUR, new Date(11111), "4000", 3L, CardStatus.OPEN);
+        Card card1 = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(11111), "4000", CardStatus.OPEN, 1L);
+        Card card2 = new Card(2L, new BigDecimal("1234567890123457"), new BigDecimal(15000), CardCurrency.RUR, new Date(11111), "4000", CardStatus.OPEN, 2L);
+        Card card3 = new Card(3L, new BigDecimal("1234567890123458"), new BigDecimal(20000), CardCurrency.RUR, new Date(11111), "4000", CardStatus.OPEN, 3L);
 
         cardsList.add(card1);
         cardsList.add(card2);
@@ -83,7 +81,8 @@ public class ApplicationServiceTest {
         transactionDAO = mock(TransactionDAO.class);
         userDAO = mock(UserDAO.class);
         cardDAO = mock(CardDAO.class);
-        applicationService = new ApplicationService(userDAO, transactionDAO, cardDAO);
+        connection = mock(Connection.class);
+        applicationService = new ApplicationService(userDAO, transactionDAO, cardDAO, connection);
     }
 
     @Test
@@ -116,7 +115,8 @@ public class ApplicationServiceTest {
         TransactionDAO transactionDAO = mock(TransactionDAO.class);
         UserDAO userDAO = mock(UserDAO.class);
         CardDAO cardDAO = mock(CardDAO.class);
-        applicationService = new ApplicationService(userDAO, transactionDAO, cardDAO);
+        connection = mock(Connection.class);
+        applicationService = new ApplicationService(userDAO, transactionDAO, cardDAO, connection);
         when(transactionDAO.findAll()).thenReturn(histList);
         //when
         ArrayList<Transaction> listGot = (ArrayList<Transaction>) applicationService.getAllTransactions();
@@ -130,11 +130,12 @@ public class ApplicationServiceTest {
         //given
         TransactionDAO transactionDAO = mock(TransactionDAO.class);
         UserDAO userDAO = mock(UserDAO.class);
-        applicationService = new ApplicationService(userDAO, transactionDAO, cardDAO);
+        connection = mock(Connection.class);
+        applicationService = new ApplicationService(userDAO, transactionDAO, cardDAO, connection);
         long id = 1;
-        when(transactionDAO.findByUserId(id)).thenReturn(histListId);
+        when(transactionDAO.findByCardId(id)).thenReturn(histListId);
         //when
-        ArrayList<Transaction> listGot = (ArrayList<Transaction>) applicationService.getTransactionsByUserId(id);
+        ArrayList<Transaction> listGot = (ArrayList<Transaction>) applicationService.getTransactionsByCardId(id);
         //then
         Assert.assertTrue(listGot.size() > 0);
         Assert.assertEquals(listGot, histListId);
@@ -172,11 +173,11 @@ public class ApplicationServiceTest {
             return card;
         }).when(cardDAO).depositMoney(any(Long.class), any(BigDecimal.class));
         //when
-        applicationService.depositMoney(1L, new BigDecimal(100));
+        applicationService.depositMoney(1L, new BigDecimal(100), "CLIENT");
         //then
         verify(cardDAO, times(1)).depositMoney(1L, new BigDecimal(100));
         Assert.assertNotNull(card);
-        Assert.assertTrue(card.getId()==1L);
+        Assert.assertEquals(1L, (long) card.getId());
     }
 
     @Test
@@ -198,10 +199,10 @@ public class ApplicationServiceTest {
             return card;
         }).when(cardDAO).withdrawMoney(any(Long.class), any(BigDecimal.class));
         //when
-        applicationService.withdrawMoney(1L, new BigDecimal(100));
+        applicationService.withdrawMoney(1L, new BigDecimal(100), "CLIENT");
         //then
         verify(cardDAO, times(1)).withdrawMoney(1L, new BigDecimal(100));
         Assert.assertNotNull(card);
-        Assert.assertTrue(card.getId()==1L);
+        Assert.assertEquals(1L, (long) card.getId());
     }
 }

@@ -30,7 +30,7 @@ public class HistoryServlet extends HttpServlet {
         logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
                 req.getMethod(), resp.getStatus(), req.getRequestURI(), resp.getLocale(), req.getRequestedSessionId()));
         List<Transaction> histList = histService.getAllTransactions();
-        List<Transaction> histListId = histService.getTransactionsByUserId(1);
+        List<Transaction> histListId = histService.getTransactionsByCardId(1);
         req.setAttribute("histList", histList);
         req.setAttribute("histListId", histListId);
         req.getRequestDispatcher("view/History.jsp").forward(req, resp);

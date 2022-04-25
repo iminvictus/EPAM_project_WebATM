@@ -60,19 +60,23 @@
                                     <table>
                                         <tr>
                                             <th>TransactionID</th>
-                                            <th>UserID</th>
-                                            <th>Transaction type</th>
+                                            <th>Date</th>
                                             <th>Transaction amount</th>
-                                            <th>Time</th>
+                                            <th>Transaction type</th>
+                                            <th>Initiated by</th>
+                                            <th>State</th>
+                                            <th>CardID</th>
                                         </tr>
                                         <% DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
                                         for (Transaction t: transactions) {%>
                                         <tr>
                                             <td><%=t.getId()%></td>
-                                            <td><%=t.getUserid()%></td>
-                                            <td><%=t.getType()%></td>
+                                            <td><%=t.getDate().format(formatter)%></td>
                                             <td><%=t.getAmount()%></td>
-                                            <td><%=t.getTime().format(formatter)%></td>
+                                            <td><%=t.getType()%></td>
+                                            <td><%=t.getInitiated_by()%></td>
+                                            <td><%=t.getState()%></td>
+                                            <td><%=t.getId_card()%></td>
                                             <% } %>
                                         </tr>
                                     </table>

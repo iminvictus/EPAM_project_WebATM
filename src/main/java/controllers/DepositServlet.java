@@ -46,7 +46,8 @@ public class DepositServlet extends HttpServlet {
                 req.getMethod(), resp.getStatus(), req.getRequestURI(), resp.getLocale(), req.getRequestedSessionId()));
         long id = Long.parseLong(req.getParameter("id"));
         BigDecimal amountOfDeposit = new BigDecimal(req.getParameter("amount"));
-        applicationService.depositMoney(id, amountOfDeposit);
+        String initiator = applicationService.getUserById(id).getRole().toString();
+        applicationService.depositMoney(id, amountOfDeposit, initiator);
         resp.sendRedirect(req.getContextPath() + "/service");
     }
 

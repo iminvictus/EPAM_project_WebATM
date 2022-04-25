@@ -39,8 +39,8 @@ public class AdminLastTransactionsServletTest {
     @Before
     public void initTest() {
         list = List.of(
-                new Transaction(2, 1, "Deposit", new BigDecimal(1000), ZonedDateTime.now()),
-                new Transaction(1, 1, "Withdraw", new BigDecimal(1000), ZonedDateTime.now())
+                new Transaction(1, ZonedDateTime.now(), new BigDecimal(1000), "Deposit", "CLIENT", "Done", 1),
+                new Transaction(2, ZonedDateTime.now(), new BigDecimal(1000), "Withdraw", "CLIENT", "Done", 2)
         );
     }
 
