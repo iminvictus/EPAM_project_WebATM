@@ -11,6 +11,7 @@ import java.util.List;
 import lombok.SneakyThrows;
 import models.Card;
 import models.CardCurrency;
+import models.CardStatus;
 import models.Transaction;
 import org.junit.Assert;
 import org.junit.Before;
@@ -50,7 +51,7 @@ public class CardDAOTest {
         when(preparedStatement.executeQuery()).thenReturn(resultSet);
 
         expectedCardList = new ArrayList<>();
-        expectedCardList.add(new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L));
+        expectedCardList.add(new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L, CardStatus.OPEN));
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getLong("id_card")).thenReturn(1L);
         when(resultSet.getBigDecimal("account")).thenReturn(new BigDecimal("1234567890123456"));
@@ -67,7 +68,7 @@ public class CardDAOTest {
         // given
         when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE id_card = ?")).thenReturn(preparedStatement);
 
-        Card expected = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L);
+        Card expected = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L, CardStatus.OPEN);
         // when
         final Card actual = cardDAO.findById(1L);
         // then
@@ -168,7 +169,7 @@ public class CardDAOTest {
         //given
         when(connection.prepareStatement("SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE account = ? AND pincode = ?")).thenReturn(preparedStatement);
 
-        Card expected = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L);
+        Card expected = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L, CardStatus.OPEN);
         //when
         final Card actual = cardDAO.findCardByAccAndPin(new BigDecimal("1234567890123456"), "4000");
         // then

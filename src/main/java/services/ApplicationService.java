@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 import models.Card;
+import models.CardStatus;
 import models.Transaction;
 import models.User;
 import utils.DatabaseConnectionManager;
@@ -183,6 +184,12 @@ public class ApplicationService {
             return null;
         }
         return cardDAO.findByAccount(account);
+    }
+
+    @SneakyThrows
+    public void closeCard(long account) {
+        cardDAO.changeCardStatus(account, CardStatus.CLOSED);
+        connection.commit();
     }
 
     public void destroy() {

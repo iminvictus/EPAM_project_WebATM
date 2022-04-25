@@ -8,10 +8,8 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
-import models.Card;
-import models.CardCurrency;
-import models.Transaction;
-import models.User;
+
+import models.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -70,9 +68,9 @@ public class ApplicationServiceTest {
 
         //cards' list
         cardsList = new ArrayList<>();
-        Card card1 = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(11111), "4000", 1L);
-        Card card2 = new Card(2L, new BigDecimal("1234567890123457"), new BigDecimal(15000), CardCurrency.RUR, new Date(11111), "4000", 2L);
-        Card card3 = new Card(3L, new BigDecimal("1234567890123458"), new BigDecimal(20000), CardCurrency.RUR, new Date(11111), "4000", 3L);
+        Card card1 = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(11111), "4000", 1L, CardStatus.OPEN);
+        Card card2 = new Card(2L, new BigDecimal("1234567890123457"), new BigDecimal(15000), CardCurrency.RUR, new Date(11111), "4000", 2L, CardStatus.OPEN);
+        Card card3 = new Card(3L, new BigDecimal("1234567890123458"), new BigDecimal(20000), CardCurrency.RUR, new Date(11111), "4000", 3L, CardStatus.OPEN);
 
         cardsList.add(card1);
         cardsList.add(card2);

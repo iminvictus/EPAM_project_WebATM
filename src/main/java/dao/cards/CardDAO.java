@@ -11,7 +11,7 @@ import java.util.List;
 import lombok.extern.log4j.Log4j;
 import models.Card;
 import models.CardCurrency;
-import models.User;
+import models.CardStatus;
 
 @Log4j
 public class CardDAO extends DataAccessObject<Card> {
@@ -20,8 +20,9 @@ public class CardDAO extends DataAccessObject<Card> {
     private static final String FIND_BY_USER_ID = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE id_user = ?";
     private static final String FIND_ALL = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards";
     private static final String FIND_USER_ID_BY_CARD_AND_PIN = "SELECT id_user FROM cards WHERE account = ? AND pincode = ?";
-    private static final String FIND_CARD_BY_ACC_AND_PIN = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user FROM cards WHERE account = ? AND pincode = ?";
+    private static final String FIND_CARD_BY_ACC_AND_PIN = "SELECT id_card, account, balance, currency, expiration_date, pincode, id_user, status FROM cards WHERE account = ? AND pincode = ?";
     private static final String UPDATE_BALANCE = "UPDATE cards SET balance = ? WHERE id_card = ?";
+    private static final String CHANGE_CARD_STATUS = "UPDATE cards SET status = ? WHERE account = ?";
 
     public CardDAO(Connection connection) {
         super(connection);
@@ -142,6 +143,18 @@ public class CardDAO extends DataAccessObject<Card> {
         return userId;
     }
 
+    public void changeCardStatus(long account, CardStatus status) {
+        try (PreparedStatement statement = this.connection.prepareStatement(CHANGE_CARD_STATUS)) {
+            statement.setString(1, status.toString());
+            statement.setLong(2, account);
+            logger.info("changeCardStatus method was invoked in UserDAO");
+            statement.execute();
+        } catch (SQLException ex) {
+            logger.error("sql exception", ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
     public Card findCardByAccAndPin(BigDecimal account, String pincode) {
         try {
             PreparedStatement statement = this.connection.prepareStatement(FIND_CARD_BY_ACC_AND_PIN);
@@ -157,6 +170,7 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setExpiration(resultSet.getDate("expiration_date"));
                 card.setUserid(resultSet.getLong("id_user"));
                 card.setPincode(resultSet.getString("pincode"));
+                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status")));
             }
             logger.info("findCardByAccAndPin method was invoked in CardDAO");
             return card.getId() != null ? card : null;

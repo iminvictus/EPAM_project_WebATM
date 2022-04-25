@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
 import models.Card;
 import models.CardCurrency;
+import models.CardStatus;
 import models.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,7 +62,7 @@ public class WithdrawServletTest {
     @Test
     public void doPostWithdrawTest() throws IOException, ServletException {
         //given
-        Card card = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L);
+        Card card = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L, CardStatus.OPEN);
         BigDecimal amount = card.getBalance().divide(new BigDecimal(10));
         when(request.getParameter("id")).thenReturn("1");
         when(request.getParameter("amount")).thenReturn("10");

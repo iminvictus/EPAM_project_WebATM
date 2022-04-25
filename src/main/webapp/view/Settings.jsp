@@ -1,3 +1,6 @@
+<%@ page import="models.Card" %>
+<%@ page import="utils.CardUtils" %>
+<%@ page import="jakarta.servlet.http.HttpSession" %>
 <!DOCTYPE html>
 <html style="font-size: 16px;">
   <head>
@@ -34,11 +37,16 @@
         <a href="/" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-1">Back to<br>menu
         </a>
         <a href="/" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-2">Change<br>PIN
+            <%
+                Card card = CardUtils.getApprovedCard(session);
+            %>
         </a>
-        <a href="/" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-3">Block<br>card
-        </a>
-        <a href="/logout" class="u-btn u-btn-submit u-button-style u-btn-width-default u-btn-float-default">Return card
-        </a>
+          <form name="form1" action="/close?id=<%=card.getAccount()%>>" method="post" >
+              <button name="form1" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-3">Block <br> card </button>
+          </form>
+
+          <a href="/logout" class="u-btn u-btn-submit u-button-style u-btn-width-default u-btn-float-default">Return card
+          </a>
       </div>
     </section>
   </body>
