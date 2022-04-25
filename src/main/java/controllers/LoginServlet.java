@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 import models.Card;
+import models.CardStatus;
 import models.Role;
 import services.ApplicationService;
 import utils.CardUtils;
@@ -46,9 +46,17 @@ public class LoginServlet extends HttpServlet {
         if (card != null) {
             CardUtils.storeApprovedCard(req.getSession(), card);
             Role role = (Role) req.getSession().getAttribute("role");
+            CardStatus status = (CardStatus) req.getSession().getAttribute("status");
             if (role.equals(Role.ADMIN)) {
                 resp.sendRedirect(req.getContextPath() + ("/view/HomeAdmin.jsp"));
-            } else {resp.sendRedirect(req.getContextPath() + ("/view/Home.jsp"));}
+            } else if (role.equals(Role.CLIENT)) {
+                if (status.equals(CardStatus.CLOSED)){
+                    String errorMessage = "Card is CLOSED";
+                    req.setAttribute("errorMessage", errorMessage);
+                    req.getRequestDispatcher("view/LoginPage.jsp").forward(req, resp);
+                    return;
+                }
+                resp.sendRedirect(req.getContextPath() + ("/view/Home.jsp"));}
         } else {
             String errorMessage = "Invalid card number or PIN";
 

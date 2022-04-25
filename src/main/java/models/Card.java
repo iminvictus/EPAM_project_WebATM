@@ -18,4 +18,9 @@ public class Card implements DataTransferObject {
     private Date expiration;
     private String pincode;
     private Long userid;
+    CardStatus cardStatus;
+
+    public BigDecimal getAccount() {
+        return account;
+    }
 }

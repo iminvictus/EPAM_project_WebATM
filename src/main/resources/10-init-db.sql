@@ -25,5 +25,6 @@ CREATE TABLE cards
     expiration_date date,
     pincode VARCHAR (32),
     id_user INTEGER NOT NULL,
+    status text NOT NULL,
     FOREIGN KEY (id_user) references users (id)
 );
