@@ -205,6 +205,10 @@ public class ApplicationService {
         connection.commit();
     }
 
+    public void updateCardPin(BigDecimal account, String pincode) {
+        cardDAO.updatePin(account, pincode);
+    }
+
     public void destroy() {
         userDAO.closeConnection();
         transactionDAO.closeConnection();

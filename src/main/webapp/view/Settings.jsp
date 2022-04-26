@@ -33,21 +33,20 @@
       <h5 style="display: inline-block" class="u-align-center u-custom-font u-font-arial u-text u-text-default u-text-2">
           <a class="u-active-none u-btn u-button-link u-button-style u-hover-none u-none u-text-black u-text-hover-palette-2-base u-btn-1" href="/view/Help.jsp">Need help?</a>
       </h5>
-      </div></header> 
+      </div></header>
+      <%
+        Card card = CardUtils.getApprovedCard(session);
+      %>
     <section class="u-clearfix u-image u-section-1" id="sec-eb30" data-image-width="2000" data-image-height="1000">
       <div class="u-align-left u-clearfix u-sheet u-sheet-1">
         <h1 class="u-text u-text-default u-text-1">Security settings</h1>
+        <form name="form1" action="/close?id=<%=card.getAccount()%>>" method="post" >
         <a href="/" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-1">Back to<br>menu
         </a>
-        <a href="/" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-2">Change<br>PIN
-            <%
-                Card card = CardUtils.getApprovedCard(session);
-            %>
+        <a href="/change-pin" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-2">Change<br>PIN
         </a>
-          <form name="form1" action="/close?id=<%=card.getAccount()%>>" method="post" >
-              <button name="form1" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-3">Block <br> card </button>
-          </form>
-
+            <button name="form1" class="u-border-none u-btn u-btn-round u-button-style u-gradient u-hover-palette-1-light-1 u-none u-radius-20 u-btn-3">Block <br> card </button>
+        </form>
           <a href="/logout" class="u-btn u-btn-submit u-button-style u-btn-width-default u-btn-float-default">Return card
           </a>
       </div>

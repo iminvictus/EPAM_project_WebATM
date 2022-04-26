@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
         logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
                 req.getMethod(), resp.getStatus(), req.getRequestURI(), resp.getLocale(), req.getRequestedSessionId()));
         BigDecimal account = new BigDecimal(req.getParameter("account"));
-        String pincode = convertToMD5(req.getParameter("pincode"));
+        String pincode = CardUtils.convertToMD5(req.getParameter("pincode"));
         Card card = applicationService.getCardByAccountAndPin(account, pincode);
 
         if (card != null) {
@@ -59,21 +59,9 @@ public class LoginServlet extends HttpServlet {
                 resp.sendRedirect(req.getContextPath() + ("/view/Home.jsp"));}
         } else {
             String errorMessage = "Invalid card number or PIN";
-
             req.setAttribute("errorMessage", errorMessage);
-
             req.getRequestDispatcher("/view/LoginPage.jsp").forward(req, resp);
         }
 
-    }
-
-
-    @SneakyThrows
-    private static String convertToMD5 (String str){
-            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-            messageDigest.update(str.getBytes());
-        byte[] digest = messageDigest.digest();
-        BigInteger bigInt = new BigInteger(1, digest);
-        return bigInt.toString(16);
     }
 }

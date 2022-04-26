@@ -23,6 +23,7 @@ public class CardDAO extends DataAccessObject<Card> {
     private static final String FIND_CARD_BY_ACC_AND_PIN = "SELECT id_card, account, balance, currency, expiration_date, pincode, status, id_user FROM cards WHERE account = ? AND pincode = ?";
     private static final String UPDATE_BALANCE = "UPDATE cards SET balance = ? WHERE id_card = ?";
     private static final String CHANGE_CARD_STATUS = "UPDATE cards SET status = ? WHERE account = ?";
+    private static final String UPDATE_PIN = "UPDATE cards SET pincode = ? WHERE account = ?";
 
     public CardDAO(Connection connection) {
         super(connection);
@@ -203,6 +204,18 @@ public class CardDAO extends DataAccessObject<Card> {
             statement.setBigDecimal(1, newBalance);
             statement.setLong(2, id);
             logger.info("withDrawMoney method was invoked in CardDAO");
+            statement.execute();
+        } catch (SQLException ex) {
+            logger.error("sql exception", ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public void updatePin(BigDecimal account, String pincode) {
+        try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_PIN)) {
+            statement.setString(1, pincode);
+            statement.setBigDecimal(2, account);
+            logger.info("updatePin method was invoked in CardDAO");
             statement.execute();
         } catch (SQLException ex) {
             logger.error("sql exception", ex);
