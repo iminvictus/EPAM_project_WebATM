@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class HistoryServletIT {
     private UserDAO userDAO;
     private TransactionDAO transactionDAO;
     private CardDAO cardDAO;
+    private Connection connection;
     private HttpServletRequest request;
     private HttpServletResponse response;
     private RequestDispatcher dispatcher;
@@ -39,10 +41,10 @@ public class HistoryServletIT {
     @Before
     public void initTest() {
         histList = new ArrayList<>();
-        Transaction transaction1 = new Transaction(1, "Deposit", new BigDecimal(1000), ZonedDateTime.now());
-        Transaction transaction2 = new Transaction(2, "Withdraw", new BigDecimal(2000), ZonedDateTime.now());
-        Transaction transaction3 = new Transaction(1, "Deposit", new BigDecimal(500), ZonedDateTime.now());
-        Transaction transaction4 = new Transaction(2, "Withdraw", new BigDecimal(100), ZonedDateTime.now());
+        Transaction transaction1 = new Transaction(1, ZonedDateTime.now(), new BigDecimal(200), "Deposit", "CLIENT", "Done", 1);
+        Transaction transaction2 = new Transaction(2, ZonedDateTime.now(), new BigDecimal(2000), "Withdraw", "CLIENT", "Done", 2);
+        Transaction transaction3 = new Transaction(3, ZonedDateTime.now(), new BigDecimal(500), "Deposit", "CLIENT", "Done", 1);
+        Transaction transaction4 = new Transaction(4, ZonedDateTime.now(), new BigDecimal(1000), "Withdraw", "CLIENT", "Done", 2);
         histList.add(transaction1);
         histList.add(transaction2);
         histList.add(transaction3);
@@ -50,7 +52,7 @@ public class HistoryServletIT {
         histListId = new ArrayList<>();
         for (Transaction tr: histList
              ) {
-            if(tr.getUserid()==1) histListId.add(tr);
+            if(tr.getId_card()==1) histListId.add(tr);
        }
 
         request = mock(HttpServletRequest.class);
@@ -60,7 +62,8 @@ public class HistoryServletIT {
         userDAO = mock(UserDAO.class);
         transactionDAO = mock(TransactionDAO.class);
         cardDAO = mock(CardDAO.class);
-        historyServlet = new HistoryServlet(new ApplicationService(userDAO, transactionDAO, cardDAO));
+        connection = mock(Connection.class);
+        historyServlet = new HistoryServlet(new ApplicationService(userDAO, transactionDAO, cardDAO, connection));
     }
 
     @Test
@@ -68,14 +71,14 @@ public class HistoryServletIT {
         // given
         when(request.getRequestDispatcher(HISTORY_PATH)).thenReturn(dispatcher);
         when(transactionDAO.findAll()).thenReturn(histList);
-        when(transactionDAO.findByUserId(1)).thenReturn(histListId);
+        when(transactionDAO.findByCardId(1L)).thenReturn(histListId);
 
         // when
         historyServlet.doGet(request, response);
 
         // then
         verify(transactionDAO, times(1)).findAll();
-        verify(transactionDAO, times(1)).findByUserId(1);
+        verify(transactionDAO, times(1)).findByCardId(1L);
 
         verify(request, times(1)).setAttribute("histList", histList);
         verify(request, times(1)).setAttribute("histListId", histListId);

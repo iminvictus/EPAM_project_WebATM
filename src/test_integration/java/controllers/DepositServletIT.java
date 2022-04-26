@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import java.sql.Connection;
+import models.Role;
 import models.Transaction;
 import models.User;
 import org.junit.Assert;
@@ -39,6 +41,8 @@ public class DepositServletIT {
     @Mock
     private TransactionDAO transactionDAO;
     @Mock
+    private Connection connection;
+    @Mock
     private HttpServletRequest request;
     @Mock
     private HttpServletResponse response;
@@ -50,14 +54,14 @@ public class DepositServletIT {
         when(request.getParameter("id")).thenReturn("1");
         when(request.getParameter("amount")).thenReturn("111");
         when(request.getRequestDispatcher(DEPOSIT_PATH)).thenReturn(dispatcher);
-        when(userDAO.findById(1L)).thenReturn(new User(1L, "Test1", "Test11"));
-        servlet = new DepositServlet(new ApplicationService(userDAO, transactionDAO, cardDAO));
+        when(userDAO.findById(1L)).thenReturn(new User(1L, "Test1", "Test11", "79998887755", "adf@mail.ru", "qwerty1234", "secret", Role.CLIENT));
+        servlet = new DepositServlet(new ApplicationService(userDAO, transactionDAO, cardDAO, connection));
     }
 
     @Test
     public void doDepositTest() throws ServletException, IOException {
         ArgumentCaptor<Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
-        User testUser = new User(1L, "Test1", "Test11");
+        User testUser = new User(1L, "Test1", "Test11", "79998887755", "adf@mail.ru", "qwerty1234", "secret", Role.CLIENT);
         servlet.doGet(request, response);
 
         verify(userDAO, times(1)).findById(1);
@@ -71,7 +75,7 @@ public class DepositServletIT {
         verify(cardDAO, times(1)).depositMoney(1, new BigDecimal(111));
         verify(response, times(1)).sendRedirect(request.getContextPath() + "/service");
         Mockito.verify(transactionDAO).save(captor.capture());
-        Assert.assertEquals(1L, captor.getValue().getUserid());
+        Assert.assertEquals(1L, captor.getValue().getId_card());
         Assert.assertEquals("Deposit", captor.getValue().getType());
         Assert.assertEquals(new BigDecimal(111), captor.getValue().getAmount());
     }

@@ -39,10 +39,10 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setId(resultSet.getLong("id_card"));
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
-                card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
+                card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency")));
                 card.setExpiration_date(resultSet.getDate("expiration_date"));
                 card.setPincode(resultSet.getString("pincode"));
-                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status")));
+                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status").toUpperCase()));
                 card.setId_user(resultSet.getLong("id_user"));
             }
             logger.info("findById method was invoked in CardDAO");
@@ -63,10 +63,10 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setId(resultSet.getLong("id_card"));
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
-                card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
+                card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency")));
                 card.setExpiration_date(resultSet.getDate("expiration_date"));
                 card.setPincode(resultSet.getString("pincode"));
-                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status")));
+                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status").toUpperCase()));
                 card.setId_user(resultSet.getLong("id_user"));
             }
             logger.info("findByAccount method was invoked in CardDAO");
@@ -88,10 +88,10 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setId(resultSet.getLong("id_card"));
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
-                card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
+                card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency")));
                 card.setExpiration_date(resultSet.getDate("expiration_date"));
                 card.setPincode(resultSet.getString("pincode"));
-                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status")));
+                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status").toUpperCase()));
                 card.setId_user(resultSet.getLong("id_user"));
                 cardsList.add(card);
             }
@@ -113,10 +113,10 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setId(resultSet.getLong("id_card"));
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
-                card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
+                card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency")));
                 card.setExpiration_date(resultSet.getDate("expiration_date"));
                 card.setPincode(resultSet.getString("pincode"));
-                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status")));
+                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status").toUpperCase()));
                 card.setId_user(resultSet.getLong("id_user"));
                 if (card.getId_user() == id)
                     cardsListId.add(card);
@@ -169,10 +169,10 @@ public class CardDAO extends DataAccessObject<Card> {
                 card.setId(resultSet.getLong("id_card"));
                 card.setAccount(resultSet.getBigDecimal("account"));
                 card.setBalance(resultSet.getBigDecimal("balance"));
-                card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency").toUpperCase()));
+                card.setCurrency(CardCurrency.valueOf(resultSet.getString("currency")));
                 card.setExpiration_date(resultSet.getDate("expiration_date"));
                 card.setPincode(resultSet.getString("pincode"));
-                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status")));
+                card.setCardStatus(CardStatus.valueOf(resultSet.getString("status").toUpperCase()));
                 card.setId_user(resultSet.getLong("id_user"));
             }
             logger.info("findCardByAccAndPin method was invoked in CardDAO");

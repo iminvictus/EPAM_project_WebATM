@@ -1,0 +1,1 @@
+SELECT setval('transactions_id_transaction_seq',(SELECT GREATEST(MAX(id_transaction)+1,nextval('transactions_id_transaction_seq'))-1 FROM transactions))

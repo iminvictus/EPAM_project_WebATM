@@ -53,7 +53,7 @@ public class AdminAllTransactionsByUserServletTest {
     public void testedDoPost_givenUserId_thenSetTransactionListAndForwardToJSPPage() throws IOException, ServletException {
         //given
         when(request.getParameter("id")).thenReturn("1");
-        when(service.getTransactionsByCardId(1)).thenReturn(List.of(
+        when(service.getTransactionsByUserId(1)).thenReturn(List.of(
                 new Transaction(1, ZonedDateTime.now(), new BigDecimal(1000), "Deposit", "CLIENT", "Done", 1),
                 new Transaction(2, ZonedDateTime.now(), new BigDecimal(1000), "Withdraw", "CLIENT", "Done", 2)
         ));
@@ -64,7 +64,7 @@ public class AdminAllTransactionsByUserServletTest {
 
         //then
         verify(request, atLeast(2)).getParameter("id");
-        verify(service, atLeast(1)).getTransactionsByCardId(1);
+        verify(service, atLeast(1)).getTransactionsByUserId(1);
         verify(request, atLeast(1)).getRequestDispatcher(PATH);
         verify(dispatcher, atLeast(1)).forward(request, response);
     }
