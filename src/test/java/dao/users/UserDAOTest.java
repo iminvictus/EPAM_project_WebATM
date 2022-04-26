@@ -138,11 +138,12 @@ public class UserDAOTest {
 
     @Test
     public void findAll_givenSqlException_thenLogAndRethrowRuntimeException() throws SQLException {
-
+        //when
         RuntimeException exception = assertThrows(
                 RuntimeException.class,
                 () -> dao.findAll()
         );
+        //then
         assertTrue(exception.getMessage().contains("sql"));
     }
 

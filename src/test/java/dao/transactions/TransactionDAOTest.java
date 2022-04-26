@@ -21,7 +21,9 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -64,6 +66,7 @@ public class TransactionDAOTest {
 
     @Test
     public void findById_givenTransactionFound_thenReturnTransaction() throws SQLException {
+        //given
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getLong("id_transaction")).thenReturn(1L);
         when(resultSet.getTimestamp("date")).thenReturn(timestamp);
@@ -72,9 +75,9 @@ public class TransactionDAOTest {
         when(resultSet.getString("initiated_by")).thenReturn("CLIENT");
         when(resultSet.getString("state")).thenReturn("Done");
         when(resultSet.getLong("id_card")).thenReturn(1L);
-
+        //when
         final Transaction actual = dao.findById(1);
-
+        //then
         verify(preparedStatement, times(1)).setLong(1, 1L);
         verify(preparedStatement, times(1)).executeQuery();
         Assert.assertEquals(actual, expected);
@@ -82,10 +85,11 @@ public class TransactionDAOTest {
 
     @Test
     public void findById_givenNoTransactionFound_thenReturnNull() throws SQLException {
+        //given
         when(resultSet.next()).thenReturn(false);
-
+        //when
         final Transaction actual = dao.findById(2);
-
+        //then
         verify(preparedStatement, times(1)).setLong(1, 2L);
         verify(preparedStatement, times(1)).executeQuery();
         Assert.assertNull(actual);
@@ -93,15 +97,18 @@ public class TransactionDAOTest {
 
     @Test
     public void findById_givenSqlException_thenLogAndRethrowRuntimeException() throws SQLException {
-        SQLException ex = new SQLException();
+        //given
         when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getLong("id")).thenThrow(ex);
-        Assert.assertThrows(RuntimeException.class,
+        //when
+        RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> dao.findById(1));
+        //then
+        Assert.assertTrue(exception.getMessage().contains("sql"));
     }
 
     @Test
     public void findByUserId_givenUserFound_thenReturnTransaction() throws SQLException {
+        //given
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getLong("id_transaction")).thenReturn(1L);
         when(resultSet.getTimestamp("date")).thenReturn(timestamp);
@@ -110,9 +117,9 @@ public class TransactionDAOTest {
         when(resultSet.getString("initiated_by")).thenReturn("CLIENT");
         when(resultSet.getString("state")).thenReturn("Done");
         when(resultSet.getLong("id_card")).thenReturn(1L);
-
+        //when
         final List<Transaction> actual = dao.findByCardId(1);
-
+        //then
         verify(preparedStatement, times(1)).setLong(1, 1L);
         verify(preparedStatement, times(1)).executeQuery();
         Assert.assertNotNull(actual);
@@ -121,10 +128,11 @@ public class TransactionDAOTest {
 
     @Test
     public void findByUserId_givenNoTransactionFound_thenReturnNull() throws SQLException {
+        //given
         when(resultSet.next()).thenReturn(false);
-
+        //when
         final Transaction actual = dao.findById(2);
-
+        //then
         verify(preparedStatement, times(1)).setLong(1, 2L);
         verify(preparedStatement, times(1)).executeQuery();
         Assert.assertNull(actual);
@@ -132,16 +140,18 @@ public class TransactionDAOTest {
 
     @Test
     public void findByUserId_givenSqlException_thenLogAndRethrowRuntimeException() throws SQLException {
-        SQLException ex = new SQLException();
+        //given
         when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getLong("id")).thenThrow(ex);
-
-        Assert.assertThrows(RuntimeException.class,
+        //when
+        RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> dao.findByCardId(1));
+        //then
+        Assert.assertTrue(exception.getMessage().contains("sql"));
     }
 
     @Test
     public void findAll_AllTransactionsFound() throws SQLException {
+        //given
         when(resultSet.next()).thenReturn(true).thenReturn(false);
         when(resultSet.getLong("id_transaction")).thenReturn(1L);
         when(resultSet.getTimestamp("date")).thenReturn(timestamp);
@@ -150,9 +160,9 @@ public class TransactionDAOTest {
         when(resultSet.getString("initiated_by")).thenReturn("CLIENT");
         when(resultSet.getString("state")).thenReturn("Done");
         when(resultSet.getLong("id_card")).thenReturn(1L);
-
+        //when
         final List<Transaction> actual = dao.findAll();
-
+        //then
         verify(preparedStatement, atLeast(1))
                 .executeQuery("SELECT id_transaction, date, amount, type, initiated_by, state, id_card FROM transactions");
         Assert.assertNotNull(actual);
@@ -161,10 +171,11 @@ public class TransactionDAOTest {
 
     @Test
     public void findAll_NoTransactionsFound_thenReturnNull() throws SQLException {
+        //given
         when(resultSet.next()).thenReturn(false);
-
+        //when
         final List<Transaction> actual = dao.findAll();
-
+        //then
         verify(preparedStatement, atLeast(1))
                 .executeQuery("SELECT id_transaction, date, amount, type, initiated_by, state, id_card FROM transactions");
         Assert.assertNull(actual);
@@ -172,17 +183,20 @@ public class TransactionDAOTest {
 
     @Test
     public void findAll_givenSqlException_thenLogAndRethrowRuntimeException() throws SQLException {
-        SQLException ex = new SQLException();
+        //given
         when(resultSet.next()).thenReturn(true).thenReturn(false);
-        when(resultSet.getLong("id")).thenThrow(ex);
-        Assert.assertThrows(RuntimeException.class,
+        //when
+        RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> dao.findAll());
+        //then
+        Assert.assertTrue(exception.getMessage().contains("sql"));
     }
 
     @Test
     public void save_TransactionSaved() throws SQLException {
+        //when
         dao.save(expected);
-
+        //then
         verify(preparedStatement, times(1))
                 .setTimestamp(1, Timestamp.valueOf(ZonedDateTime.of(timestamp.toLocalDateTime(),
                         ZoneId.systemDefault()).toLocalDateTime()));
@@ -196,10 +210,12 @@ public class TransactionDAOTest {
 
     @Test
     public void save_givenSqlException_thenLogAndRethrowRuntimeException() throws SQLException {
+        //given
         SQLException ex = new SQLException();
-        Mockito.doThrow(ex).when(preparedStatement).setString(3, "deposit");
-
-        Assert.assertThrows(RuntimeException.class,
+        //when
+        doThrow(ex).when(preparedStatement).setString(3, "deposit");
+        //then
+        assertThrows(RuntimeException.class,
                 () -> dao.save(expected));
     }
 }

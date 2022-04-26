@@ -11,9 +11,12 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import java.sql.Connection;
 import java.sql.Date;
 import models.Card;
 import models.CardCurrency;
+import models.CardStatus;
+import models.Role;
 import models.Transaction;
 import models.User;
 import org.junit.Assert;
@@ -41,6 +44,8 @@ public class WithdrawServletIT {
     @Mock
     private TransactionDAO transactionDAO;
     @Mock
+    private Connection connection;
+    @Mock
     private HttpServletRequest request;
     @Mock
     private HttpServletResponse response;
@@ -51,20 +56,20 @@ public class WithdrawServletIT {
 
     @Before
     public void initTest() {
-        Card card = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L);
+        Card card = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", CardStatus.OPEN, 1L);
         when(request.getParameter("id")).thenReturn("1");
         when(request.getParameter("amount")).thenReturn("10");
         when(request.getRequestDispatcher(WITHDRAW_PATH)).thenReturn(dispatcher);
-        when(userDAO.findById(1L)).thenReturn(new User(1L, "Ivan", "Ivanov"));
+        when(userDAO.findById(1L)).thenReturn(new User(1L, "Test1", "Test11", "79998887755", "adf@mail.ru", "qwerty1234", "secret", Role.CLIENT));
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute("approvedCard")).thenReturn(card);
     }
 
     @Test
     public void doWithdrawTest() throws ServletException, IOException {
-        WithdrawServlet servlet = new WithdrawServlet(new ApplicationService(userDAO, transactionDAO, cardDAO));
+        WithdrawServlet servlet = new WithdrawServlet(new ApplicationService(userDAO, transactionDAO, cardDAO, connection));
         ArgumentCaptor <Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
-        User testUser = new User(1L, "Ivan", "Ivanov");
+        User testUser = new User(1L, "Test1", "Test11", "79998887755", "adf@mail.ru", "qwerty1234", "secret", Role.CLIENT);
         servlet.doGet(request, response);
 
         verify(userDAO, times(1)).findById(1);
@@ -78,7 +83,7 @@ public class WithdrawServletIT {
         verify(cardDAO, times(1)).withdrawMoney(1, new BigDecimal(10));
         verify(response, times(1)).sendRedirect(request.getContextPath() + "/service");
         Mockito.verify(transactionDAO).save(captor.capture());
-        Assert.assertEquals(1L, captor.getValue().getUserid());
+        Assert.assertEquals(1L, captor.getValue().getId_card());
         Assert.assertEquals("Withdraw", captor.getValue().getType());
         Assert.assertEquals(new BigDecimal(10), captor.getValue().getAmount());
     }

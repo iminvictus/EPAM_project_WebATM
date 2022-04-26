@@ -94,8 +94,7 @@ public class TransferServletTest {
         servlet.doPost(request, response);
         //then
         verify(response, times(1)).sendRedirect(request.getContextPath() + "/service");
-        verify(applicationService, times(1)).withdrawMoney(cardCurrent.getId(), cardCurrent.getBalance().divide(new BigDecimal(10)), "CLIENT");
-        verify(applicationService, times(1)).depositMoney(cardDest.getId(), cardCurrent.getBalance().divide(new BigDecimal(10)), "CLIENT");
+        verify(applicationService, times(1)).transferMoney(cardCurrent.getId(), cardDest.getId(), cardCurrent.getBalance().divide(new BigDecimal(10)), "CLIENT");
     }
 
     @SneakyThrows

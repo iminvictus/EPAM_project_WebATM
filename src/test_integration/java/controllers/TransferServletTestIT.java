@@ -6,13 +6,16 @@ import dao.users.UserDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.SneakyThrows;
 import models.Card;
 import models.CardCurrency;
+import models.CardStatus;
 import models.Role;
 import models.Transaction;
 import models.User;
@@ -44,6 +47,10 @@ public class TransferServletTestIT {
     @Mock
     private TransactionDAO transactionDAO;
     @Mock
+    private Connection connection;
+    @Mock
+    HttpSession session;
+    @Mock
     private HttpServletRequest request;
     @Mock
     private HttpServletResponse response;
@@ -55,11 +62,11 @@ public class TransferServletTestIT {
     public void doGetTransferTest() {
         //given
         ArgumentCaptor<Transaction> captor = ArgumentCaptor.forClass(Transaction.class);
-        ApplicationService applicationService = new ApplicationService(userDAO, transactionDAO, cardDAO);
+        ApplicationService applicationService = new ApplicationService(userDAO, transactionDAO, cardDAO, connection);
         TransferServlet transferServlet = new TransferServlet(applicationService);
 
-        Card cardCurrent = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", 1L);
-        Card cardDest = new Card(2L, new BigDecimal("1234567890123457"), new BigDecimal(10000), CardCurrency.RUR, new Date(123666), "4001", 2L);
+        Card cardCurrent = new Card(1L, new BigDecimal("1234567890123456"), new BigDecimal(10000), CardCurrency.RUR, new Date(12345), "4000", CardStatus.OPEN, 1L);
+        Card cardDest = new Card(2L, new BigDecimal("1234567890123457"), new BigDecimal(10000), CardCurrency.RUR, new Date(123666), "4001", CardStatus.OPEN, 2L);
         User user = new User(1L, "Petr", "Petrov");
         BigDecimal amount = cardCurrent.getBalance().divide(new BigDecimal(10));
 
@@ -67,6 +74,8 @@ public class TransferServletTestIT {
         when(request.getRequestDispatcher(path)).thenReturn(dispatcher);
         when(request.getParameter("amount")).thenReturn(String.valueOf(amount));
         when(request.getParameter("dest_account")).thenReturn(String.valueOf(cardDest.getAccount()));
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("role")).thenReturn("CLIENT");
         when(userDAO.findById(user.getId())).thenReturn(user);
         when(cardDAO.findById(cardCurrent.getId())).thenReturn(cardCurrent);
         when(cardDAO.findByAccount(cardDest.getAccount())).thenReturn(cardDest);
@@ -87,16 +96,16 @@ public class TransferServletTestIT {
         Mockito.verify(transactionDAO, times(2)).save(captor.capture());
 
         List<Transaction> transactions = captor.getAllValues();
-        List<Long> userIds = new ArrayList<>();
+        List<Long> cardIds = new ArrayList<>();
         List<String> typesList = new ArrayList<>();
         for (Transaction tr : transactions
         ) {
-            userIds.add(tr.getUserid());
+            cardIds.add(tr.getId_card());
             typesList.add(tr.getType());
         }
 
-        Assert.assertTrue(userIds.contains(cardCurrent.getUserid()));
-        Assert.assertTrue(userIds.contains(cardDest.getUserid()));
+        Assert.assertTrue(cardIds.contains(cardCurrent.getId()));
+        Assert.assertTrue(cardIds.contains(cardDest.getId()));
         Assert.assertTrue(typesList.contains("Deposit"));
         Assert.assertTrue(typesList.contains("Withdraw"));
         Assert.assertTrue(transactions.size() == 2);

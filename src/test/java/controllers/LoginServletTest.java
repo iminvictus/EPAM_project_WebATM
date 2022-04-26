@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import lombok.SneakyThrows;
 import models.Card;
+import models.CardStatus;
 import models.Role;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,7 +81,7 @@ public class LoginServletTest {
         verify(request, times(1)).getParameter("account");
         verify(request, times(1)).getParameter("pincode");
         verify(service, times(1)).getCardByAccountAndPin(any(BigDecimal.class), any(String.class));
-        verify(request, times(2)).getSession();
+        verify(request, times(3)).getSession();
 
     }
 
@@ -93,6 +94,7 @@ public class LoginServletTest {
         when(request.getParameter("pincode"))
                 .thenReturn(String.valueOf(new BigDecimal(0001)));
         when(service.getCardByAccountAndPin(any(BigDecimal.class), any(String.class))).thenReturn(card);
+        when(session.getAttribute("status")).thenReturn(CardStatus.OPEN);
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute("role")).thenReturn(Role.CLIENT);
         //when
@@ -107,7 +109,7 @@ public class LoginServletTest {
         verify(request, times(1)).getParameter("account");
         verify(request, times(1)).getParameter("pincode");
         verify(service, times(1)).getCardByAccountAndPin(any(BigDecimal.class), any(String.class));
-        verify(request, times(2)).getSession();
+        verify(request, times(3)).getSession();
 
     }
 

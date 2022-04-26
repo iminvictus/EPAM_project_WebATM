@@ -23,6 +23,8 @@ services:
           - ./src/main/resources/10-init-db.sql:/docker-entrypoint-initdb.d/10-init-db.sql
           # copy the sql script to fill tables
           - ./src/main/resources/20-fill-test-data.sql:/docker-entrypoint-initdb.d/20-fill-test-data.sql
+          # fix counter in sequence for id_transaction in transactions table
+          - ./src/main/resources/30-fix-sequence-in-transactions.sql:/docker-entrypoint-initdb.d/30-fix-sequence-in-transactions.sql
     
     app:
         image: tomcat:10.0.18

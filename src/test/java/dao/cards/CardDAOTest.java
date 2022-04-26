@@ -59,7 +59,7 @@ public class CardDAOTest {
         when((resultSet.getString("currency"))).thenReturn(String.valueOf(CardCurrency.RUR));
         when(resultSet.getDate("expiration_date")).thenReturn(new Date(12345));
         when(resultSet.getString("pincode")).thenReturn("4000");
-        when(resultSet.getString("status")).thenReturn("open");
+        when(resultSet.getString("status")).thenReturn(String.valueOf(CardStatus.OPEN));
         when(resultSet.getLong("id_user")).thenReturn(1L);
     }
 
@@ -182,10 +182,11 @@ public class CardDAOTest {
 
     @Test
     public void findCardByAccAndPin_givenSqlException_thenLogAndRethrowRuntimeException() throws SQLException {
-
-        //then
-        Assert.assertThrows(RuntimeException.class,
+        //when
+        RuntimeException exception = assertThrows(RuntimeException.class,
                 () -> cardDAO.findCardByAccAndPin(new BigDecimal("1234567890123456"), "4000"));
+        //then
+        Assert.assertTrue(exception.getMessage().contains("sql"));
     }
 
     @SneakyThrows
@@ -218,8 +219,6 @@ public class CardDAOTest {
     @SneakyThrows
     @Test
     public void withdrawMoney_givenSqlException_thenLogAndRethrowRuntimeException() {
-        //given
-        SQLException ex = new SQLException();
         //when
         RuntimeException exception = assertThrows(
                 RuntimeException.class,
