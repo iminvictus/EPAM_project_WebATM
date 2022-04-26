@@ -25,7 +25,7 @@ public class SecurityFilter implements Filter {
         boolean loggedIn = session != null && session.getAttribute("approvedCard") != null;
         boolean loginRequest = request.getRequestURI().equals(loginURI);
 
-        if (loggedIn || loginRequest || request.getRequestURI().matches(".*(css|js|jpg|jpeg|png)") ) {
+        if (loggedIn || loginRequest || request.getRequestURI().matches(".*(css|js|jpg|jpeg|png|Help.jsp)") ) {
             filterChain.doFilter(request, response);
         } else {
             response.sendRedirect(loginURI);

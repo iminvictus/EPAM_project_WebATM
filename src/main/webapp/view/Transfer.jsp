@@ -27,7 +27,10 @@
     <meta property="og:type" content="website">
   </head>
   <body class="u-body u-xl-mode"><header class="u-clearfix u-gradient u-header u-header" id="sec-5f50"><div class="u-clearfix u-sheet u-sheet-1">
-        <h2 class="u-align-center u-custom-font u-text u-text-default u-text-1">Uranus Bank</h2>
+        <h2 style="display: inline-block"  class="u-align-center u-custom-font u-text u-text-default u-text-1">Uranus Bank</h2>
+    <h5 style="display: inline-block" class="u-align-center u-custom-font u-font-arial u-text u-text-default u-text-2">
+      <a class="u-active-none u-btn u-button-link u-button-style u-hover-none u-none u-text-black u-text-hover-palette-2-base u-btn-1" href="/view/Help.jsp">Need help?</a>
+    </h5>
       </div></header>
   <% String error_card = (String) request.getAttribute("error_card");
      String error_amount = (String) request.getAttribute("error_amount");%>
