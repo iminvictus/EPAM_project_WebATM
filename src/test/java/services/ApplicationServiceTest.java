@@ -205,4 +205,19 @@ public class ApplicationServiceTest {
         Assert.assertNotNull(card);
         Assert.assertEquals(1L, (long) card.getId());
     }
+
+    @Test
+    public void updatePin_givenValidPincode_thenChangePincode() {
+        //given
+        BigDecimal account = new BigDecimal(1000000);
+        String pincode = "5050";
+
+        cardDAO.updatePin(new BigDecimal(100), "5050");
+
+        //when
+        applicationService.updateCardPin(account, pincode);
+
+        //then
+        verify(cardDAO).updatePin(account, pincode);
+    }
 }

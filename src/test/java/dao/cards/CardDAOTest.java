@@ -227,4 +227,39 @@ public class CardDAOTest {
         //then
         assertTrue(exception.getMessage().contains("sql"));
     }
+
+    @SneakyThrows
+    @Test
+    public void updatePin_givenValidAccountAndPin_thenUpdatePin() {
+        //given
+        BigDecimal account = new BigDecimal(1000000);
+        String pincode = "5050";
+        when(connection.prepareStatement("UPDATE cards SET pincode = ? WHERE account = ?")).thenReturn(preparedStatement);
+
+        //when
+        cardDAO.updatePin(account, pincode);
+
+        //then
+        verify(preparedStatement).setString(1, pincode);
+        verify(preparedStatement).setBigDecimal(2, account);
+        verify(preparedStatement).execute();
+    }
+
+    @SneakyThrows
+    @Test
+    public void updatePin_givenEmptyQuery_thenRaiseException() {
+        //given
+        BigDecimal account = new BigDecimal(1000000);
+        String pincode = "5050";
+        when(connection.prepareStatement("")).thenReturn(preparedStatement);
+
+        //when
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> cardDAO.updatePin(account, pincode)
+        );
+
+        //then
+        assertTrue(exception.getMessage().contains("sql"));
+    }
 }
