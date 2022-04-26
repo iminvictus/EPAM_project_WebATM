@@ -3,6 +3,7 @@ package controllers;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j;
+import models.Card;
 import models.User;
 import services.ApplicationService;
 
@@ -45,8 +46,9 @@ public class DepositServlet extends HttpServlet {
         logger.info(String.format("METHOD:%s STATUS:%s URI:%s LOCALE:%s SESSION_ID:%s",
                 req.getMethod(), resp.getStatus(), req.getRequestURI(), resp.getLocale(), req.getRequestedSessionId()));
         long id = Long.parseLong(req.getParameter("id"));
+        Card card = (Card) req.getSession().getAttribute("approvedCard");
         BigDecimal amountOfDeposit = new BigDecimal(req.getParameter("amount"));
-        String initiator = applicationService.getUserById(id).getRole().toString();
+        String initiator = applicationService.getUserById(card.getId_user()).getRole().toString();
         applicationService.depositMoney(id, amountOfDeposit, initiator);
         resp.sendRedirect(req.getContextPath() + "/service");
     }

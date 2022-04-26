@@ -53,7 +53,7 @@ public class WithdrawServlet extends HttpServlet {
             req.getRequestDispatcher("view/Withdraw.jsp").forward(req, resp);
         } else {
             BigDecimal amountOfWithdraw = new BigDecimal(req.getParameter("amount"));
-            String initiator = applicationService.getUserById(id).getRole().toString();
+            String initiator = applicationService.getUserById(card.getId_user()).getRole().toString();
             applicationService.withdrawMoney(id, amountOfWithdraw, initiator);
             resp.sendRedirect(req.getContextPath() + "/service");
         }
